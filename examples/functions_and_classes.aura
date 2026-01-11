@@ -1,0 +1,22 @@
+let name = "World";
+let age = 42;
+
+def greet(person: str) {
+    let greeting = "Hello, " + person;
+    return greeting;
+}
+
+class User {
+    name: str
+    age: int
+    
+    def __init__(self, name: str, age: int) {
+        self.name = name;
+        self.age = age;
+    }
+    
+    def display(self) {
+        let msg = self.name + " is " + self.age;
+        return msg;
+    }
+}

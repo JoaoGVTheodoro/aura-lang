@@ -1,28 +1,443 @@
 grammar Aura;
 
-prog: statement* EOF;
+// ============================================================================
+// PROGRAM AND TOP-LEVEL
+// ============================================================================
 
-statement: let_decl SEMI
-         | expr_stmt SEMI
-         ;
+program: (importDecl | declaration | statement)* EOF;
 
-let_decl: 'let' 'mut'? IDENT ('=' expression)? ;
-
-expr_stmt: expression ;
-
-expression: atom (OP atom)* ;
-
-atom: IDENT
-    | NUMBER
-    | STRING
-    | '(' expression ')'
+importDecl
+    : 'import' modulePath ('as' IDENT)?                   # ImportModule
+    | 'from' modulePath 'import' importItems              # FromImport
     ;
 
-IDENT: [a-zA-Z_][a-zA-Z0-9_]*;
-NUMBER: [0-9]+ ('.' [0-9]+)?;
-STRING: '\"' (~[\"\\])* '\"' | '\\'' (~[\\'\\\\])* '\\'';
+modulePath: IDENT ('.' IDENT)*;
 
-SEMI: ';' ;
-OP: '+' | '-' | '*' | '/' ;
-WS: [ \t\r\n]+ -> skip ;
-COMMENT: '//' ~[\r\n]* -> skip ;
+importItems
+    : IDENT (',' IDENT)* ','?
+    | '*'
+    ;
+
+// ============================================================================
+// DECLARATIONS
+// ============================================================================
+
+declaration
+    : varDecl
+    | constDecl
+    | funcDecl
+    | classDecl
+    | traitDecl
+    | typeDecl
+    | moduleDecl
+    ;
+
+varDecl: 'let' 'mut'? IDENT typeAnnotation? ('=' expression)? ';';
+constDecl: 'const' IDENT typeAnnotation? '=' expression ';';
+
+funcDecl
+    : decorator* 'async'? 'def' IDENT typeParams? 
+      '(' parameterList? ')' returnType? 
+      ('{' statement* '}' | '=' expression)
+    ;
+
+typeParams: '<' IDENT (',' IDENT)* '>';
+
+parameterList: parameter (',' parameter)*;
+
+parameter
+    : IDENT typeAnnotation? ('=' expression)?      # PositionalParam
+    | '*' IDENT                                     # VariadicParam
+    | '*'                                           # KeywordOnlyMarker
+    | '**' IDENT                                    # KwargParam
+    ;
+
+returnType: '->' typeAnnotation;
+
+classDecl
+    : decorator* 'class' IDENT typeParams? 
+      ('extends' typeAnnotation)? 
+      ('implements' typeAnnotation (',' typeAnnotation)*)?
+      '{' classBody* '}'
+    ;
+
+classBody
+    : IDENT typeAnnotation? ('=' expression)?      # FieldDef
+    | methodDef
+    | propertyDef
+    ;
+
+methodDef
+    : '@' 'staticmethod'? '@' 'classmethod'? 'def' IDENT 
+      '(' parameterList? ')' returnType? 
+      ('{' statement* '}' | '=' expression)
+    ;
+
+propertyDef
+    : '@' 'property' 'def' IDENT '(' 'self' ')' returnType? 
+      ('{' statement* '}' | '=' expression)
+    ;
+
+traitDecl
+    : 'trait' IDENT typeParams? '{' traitMember* '}'
+    ;
+
+traitMember
+    : 'def' IDENT '(' parameterList? ')' returnType? ';'
+    | '@' 'property' 'def' IDENT '(' 'self' ')' returnType? ';'
+    ;
+
+typeDecl: 'type' IDENT typeParams? '=' typeAnnotation ';';
+
+moduleDecl
+    : 'module' IDENT '{' moduleMember* '}'
+    ;
+
+moduleMember
+    : 'export'? declaration
+    | 'export'? statement
+    ;
+
+decorator: '@' IDENT ('(' argumentList? ')')?;
+
+// ============================================================================
+// STATEMENTS
+// ============================================================================
+
+statement
+    : varDecl
+    | constDecl
+    | exprStmt
+    | ifStmt
+    | unlessStmt
+    | guardStmt
+    | whileStmt
+    | untilStmt
+    | forStmt
+    | loopStmt
+    | breakStmt
+    | continueStmt
+    | returnStmt
+    | tryStmt
+    | withStmt
+    | matchStmt
+    | blockStmt
+    ;
+
+exprStmt: expression ';';
+
+ifStmt
+    : 'if' expression '{' statement* '}' 
+      ('else' 'if' expression '{' statement* '}')* 
+      ('else' '{' statement* '}')?
+    ;
+
+unlessStmt
+    : 'unless' expression '{' statement* '}' 
+      ('else' '{' statement* '}')?
+    ;
+
+guardStmt
+    : 'guard' expression 'else' '{' statement* '}'
+    ;
+
+whileStmt: 'while' expression '{' statement* '}';
+untilStmt: 'until' expression '{' statement* '}';
+
+forStmt
+    : 'for' pattern 'in' expression 
+      ('step' expression)? 
+      '{' statement* '}'
+    ;
+
+loopStmt: 'loop' '{' statement* '}';
+
+breakStmt: 'break' ';';
+continueStmt: 'continue' ';';
+
+returnStmt: 'return' expression? ';';
+
+tryStmt
+    : 'try' '{' statement* '}' 
+      ('catch' exceptionPattern '{' statement* '}')*
+      ('finally' '{' statement* '}')?
+    ;
+
+exceptionPattern
+    : typeAnnotation ('as' IDENT)?
+    | 
+    ;
+
+withStmt
+    : 'with' withItem (',' withItem)* '{' statement* '}'
+    ;
+
+withItem: expression ('as' IDENT)?;
+
+matchStmt
+    : 'match' expression '{' matchCase+ '}'
+    ;
+
+matchCase
+    : 'case' pattern ('if' expression)? '{' statement* '}'
+    ;
+
+blockStmt: '{' statement* '}';
+
+// ============================================================================
+// EXPRESSIONS
+// ============================================================================
+
+expression: assignment;
+
+assignment
+    : pipe (assignOp pipe)*
+    ;
+
+assignOp
+    : '=' | '+=' | '-=' | '*=' | '/=' | '//=' | '%=' | '**='
+    | '&=' | '|=' | '^=' | '<<=' | '>>=' | '??='
+    ;
+
+pipe
+    : ternary ('|>' ternary)*
+    ;
+
+ternary
+    : elvis ('?' expression ':' expression)?
+    ;
+
+elvis
+    : coalesce ('?:' coalesce)*
+    ;
+
+coalesce
+    : logicalOr ('??' logicalOr)*
+    ;
+
+logicalOr
+    : logicalAnd ('or' logicalAnd)*
+    ;
+
+logicalAnd
+    : bitwiseOr ('and' bitwiseOr)*
+    ;
+
+bitwiseOr
+    : bitwiseXor ('|' bitwiseXor)*
+    ;
+
+bitwiseXor
+    : bitwiseAnd ('^' bitwiseAnd)*
+    ;
+
+bitwiseAnd
+    : equality ('&' equality)*
+    ;
+
+equality
+    : comparison (('==' | '!=' | 'is' | 'in') comparison)*
+    ;
+
+comparison
+    : shift (('<' | '>' | '<=' | '>=') shift)*
+    ;
+
+shift
+    : additive (('<<' | '>>') additive)*
+    ;
+
+additive
+    : multiplicative (('+' | '-') multiplicative)*
+    ;
+
+multiplicative
+    : unary (('*' | '/' | '//' | '%') unary)*
+    ;
+
+unary
+    : ('not' | '-' | '+' | '~') unary
+    | exponentiation
+    ;
+
+exponentiation
+    : postfix ('**' postfix)*
+    ;
+
+postfix
+    : primary (
+        call
+        | index
+        | member
+        | safeNav
+        | spreadOp
+    )*
+    ;
+
+call: '(' argumentList? ')';
+index: '[' expression ']';
+member: '.' IDENT;
+safeNav: '?.' IDENT | '?[' expression ']';
+spreadOp: ('*' | '**') IDENT;
+
+primary
+    : literal
+    | IDENT
+    | '(' expression ')'
+    | listLiteral
+    | dictLiteral
+    | setLiteral
+    | tupleLiteral
+    | rangeExpr
+    | lambdaExpr
+    | comprehension
+    | matchExpr
+    | blockExpr
+    ;
+
+literal
+    : NUMBER
+    | STRING
+    | 'true'
+    | 'false'
+    | 'null' | 'none'
+    ;
+
+argumentList: argument (',' argument)*;
+
+argument
+    : expression                           # PositionalArg
+    | IDENT '=' expression                 # KeywordArg
+    ;
+
+listLiteral
+    : '[' ']'                              # EmptyList
+    | '[' expression (',' expression)* ']' # NonEmptyList
+    | '[' expression 'for' comprehensionClause+ ']' # ListComp
+    ;
+
+dictLiteral
+    : '{' '}'                              # EmptyDict
+    | '{' kvPair (',' kvPair)* '}'         # NonEmptyDict
+    | '{' kvPair 'for' comprehensionClause+ '}' # DictComp
+    ;
+
+kvPair: expression ':' expression;
+
+setLiteral
+    : '{' expression (',' expression)+ '}'
+    | '{' expression 'for' comprehensionClause+ '}'
+    ;
+
+tupleLiteral
+    : '(' ')'                              # EmptyTuple
+    | '(' expression (',' expression)* ')'
+    ;
+
+rangeExpr
+    : expression '..' expression ('..' 'step' expression)?  # InclusiveRange
+    | expression '..<' expression                            # ExclusiveRange
+    | expression '..' ('step' expression)?                   # InfiniteRange
+    ;
+
+lambdaExpr
+    : '(' parameterList? ')' '=>' (expression | '{' statement* '}')
+    ;
+
+comprehension
+    : '[' expression 'for' comprehensionClause+ ']'  # ListComp
+    | '{' expression 'for' comprehensionClause+ '}'   # SetComp
+    ;
+
+comprehensionClause
+    : 'for' pattern 'in' expression ('if' expression)*
+    ;
+
+matchExpr
+    : 'match' expression '{' matchCase+ '}'
+    ;
+
+blockExpr
+    : '{' statement* '}'
+    ;
+
+// ============================================================================
+// PATTERNS (for matching and destructuring)
+// ============================================================================
+
+pattern
+    : orPattern
+    ;
+
+orPattern
+    : asPattern ('|' asPattern)*
+    ;
+
+asPattern
+    : constructorOrLiteral ('as' IDENT)?
+    ;
+
+constructorOrLiteral
+    : IDENT '(' patternList? ')'           # ConstructorPattern
+    | '[' patternList? ']'                 # ListPattern
+    | '{' fieldPatterns? '}'               # DictPattern
+    | literal                              # LiteralPattern
+    | IDENT                                # IdentifierPattern
+    | '_'                                  # WildcardPattern
+    ;
+
+patternList: pattern (',' pattern)* (',' '*' IDENT)?;
+
+fieldPatterns: fieldPattern (',' fieldPattern)*;
+
+fieldPattern: IDENT (':' pattern)?;
+
+// ============================================================================
+// TYPE ANNOTATIONS
+// ============================================================================
+
+typeAnnotation
+    : unionType
+    ;
+
+unionType
+    : primaryType ('|' primaryType)*
+    ;
+
+primaryType
+    : IDENT typeArgs? '?'?                 # NamedOrGenericType
+    | '(' typeAnnotation (',' typeAnnotation)* ')' '->' typeAnnotation  # FunctionType
+    | '[' typeAnnotation ']'               # ListType
+    | '[' typeAnnotation ',' typeAnnotation ']' # DictType
+    | '{' fieldTypes? '}'                  # StructuralType
+    ;
+
+typeArgs: '<' typeAnnotation (',' typeAnnotation)* '>';
+
+fieldTypes: fieldType (',' fieldType)*;
+
+fieldType: IDENT ':' typeAnnotation;
+
+// ============================================================================
+// LEXICAL RULES
+// ============================================================================
+
+IDENT: [a-zA-Z_][a-zA-Z0-9_]*;
+
+NUMBER
+    : [0-9]+ '_'? [0-9]* ('.' [0-9]+ ('e' [+-]? [0-9]+)?)?
+    | '0x' [0-9a-fA-F]+
+    | '0o' [0-7]+
+    | '0b' [01]+
+    ;
+
+STRING
+    : '"' (~["\\\r\n] | '\\' .)* '"'
+    | '\'' (~['\\\r\n] | '\\' .)* '\''
+    | 'f"' (~["\\\r\n] | '\\' .)* '"'
+    | '"""' (~'"' | '"' ~'"' | '""' ~'"')* '"""'
+    ;
+
+WS: [ \t\r\n]+ -> skip;
+COMMENT: '//' ~[\r\n]* -> skip;
+BLOCK_COMMENT: '/*' .*? '*/' -> skip;
