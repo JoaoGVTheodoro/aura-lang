@@ -19,58 +19,58 @@ This example demonstrates the full spectrum of Aura features:
 // ============================================================================
 
 // Dummy definitions for execution
-let provided_name: str? = null
-let user_greeting: str? = "Hello"
-let is_holiday: bool = false
-let is_weekend: bool = true
+let provided_name: String? = null
+let user_greeting: String? = "Hello"
+let is_holiday: Bool = false
+let is_weekend: Bool = true
 def work() { print("Working...") }
 def play() { print("Playing...") }
 let mut input_count = [0]
-def read_input() -> str {
+def read_input() -> String {
     input_count[0] = input_count[0] + 1
     if input_count[0] > 3 { return "quit" }
     return "42"
 }
-def process(input: str) { print("Processing: " + input) }
+def process(input: String) { print("Processing: " + input) }
 def cleanup() { print("Cleaning up...") }
-def process_content(content: str) { print("Content: " + content) }
-def fibonacci(n: int) -> int {
+def process_content(content: String) { print("Content: " + content) }
+def fibonacci(n: Int) -> Int {
     if n <= 1 { return n }
     return fibonacci(n - 1) + fibonacci(n - 2)
 }
 let user_input = "test"
-def validate_input(input: str) { print("Validating input: " + input) }
+def validate_input(input: String) { print("Validating input: " + input) }
 def handle_unexpected_error() { print("Handling unexpected error...") }
 def handle_validation_error(e: Error) { print("Validation error: " + e.message) }
 let data = "input data"
-def validate(d: str) -> str { return d }
-def transform(d: str) -> str { return d.upper() }
-def save(d: str) -> str {
+def validate(d: String) -> String { return d }
+def transform(d: String) -> String { return d.upper() }
+def save(d: String) -> String {
     print("Saving: " + d)
     return d
 }
 def debug(fn: any) -> any { return fn }
-def logged(level: str) -> fn<any, any> {
+def logged(level: String) -> fn<any, any> {
     return (f) => { return f }
 }
-def fetch_user_data(id: int) -> any { return null }
+def fetch_user_data(id: Int) -> any { return null }
 def process_user_data(data: any) { print("Processing user data") }
-def notify_user(msg: str) { print("Notifying: " + msg) }
-def perform_calculation(a: int, b: int) -> int { return a + b }
-def log_result(res: int) { print("Result: " + res) }
+def notify_user(msg: String) { print("Notifying: " + msg) }
+def perform_calculation(a: Int, b: Int) -> Int { return a + b }
+def log_result(res: Int) { print("Result: " + res) }
 def timeit(fn: any) -> any { return fn }
 def memoize(fn: any) -> any { return fn }
 def dataclass(cls: any) -> any { return cls }
-def upper(s: str) -> str { return s.upper() }
-def read_file(path: str) -> str { return "dummy\ndata" }
+def upper(s: String) -> String { return s.upper() }
+def read_file(path: String) -> String { return "dummy\ndata" }
 
 // Basic Result type components for top-level usage
-class Ok { let value: any }
-class Err { let error: any }
-class User { let id: int; let name: str; let age: int; let email: str; let active: bool }
+class Ok { value: any }
+class Err { error: any }
+class User { id: Int; name: String; age: Int; email: String; active: Bool }
 
-class Address { let city: str }
-class UserProfile { let address: Address? }
+class Address { city: String }
+class UserProfile { address: Address? }
 let user = UserProfile(address: Address(city: "San Francisco"))
 
 module collections {
@@ -269,7 +269,7 @@ def make_multiplier(factor: int) -> (int) -> int {
 }
 
 // Recursive function
-def fibonacci(n: int) -> int {
+def fibonacci(n: Int) -> Int {
     if n <= 1 {
         return n
     }
@@ -277,7 +277,7 @@ def fibonacci(n: int) -> int {
 }
 
 // Function with guard
-def process_data(data: any?) -> str {
+def process_data(data: any?) -> String {
     guard data != null else {
         return "No data provided"
     }
@@ -285,7 +285,7 @@ def process_data(data: any?) -> str {
 }
 
 // Closure example
-def make_counter() -> () -> int {
+def make_counter() -> () -> Int {
     let mut count = 0
     return () => {
         count += 1
@@ -298,7 +298,7 @@ def make_counter() -> () -> int {
 // ============================================================================
 
 // Match statement with literals
-def describe_number(n: int) -> str {
+def describe_number(n: Int) -> String {
     match n {
         case 0 { return "zero" }
         case 1 { return "one" }
@@ -308,7 +308,7 @@ def describe_number(n: int) -> str {
 }
 
 // Match with guards
-def classify_value(x: int) -> str {
+def classify_value(x: Int) -> String {
     match x {
         case x if x < 0 { return "negative" }
         case 0 { return "zero" }
@@ -317,7 +317,7 @@ def classify_value(x: int) -> str {
 }
 
 // Match with destructuring
-def process_pair(pair: tuple[int, int]) -> str {
+def process_pair(pair: tuple[Int, Int]) -> String {
     match pair {
         case (0, 0) { return "origin" }
         case (x, 0) { return f"on x-axis: {x}" }

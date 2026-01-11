@@ -1,10 +1,10 @@
 let value = 10;
-let nullable: str? = "hello";
+let nullable: String? = "hello";
 let coalesced = nullable ?? "default";
 
 let result = if value > 5 { "big" } else { "small" };
 
-def safe_div(a: float, b: float) {
+def safe_div(a: Float, b: Float) {
     if b == 0 {
         return null;
     }

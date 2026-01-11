@@ -1,0 +1,8 @@
+class AuraStaic {
+    name: String = ""
+}
+
+AuraStaic.name = "João";
+let name: String = AuraStaic.name;
+
+print(name);

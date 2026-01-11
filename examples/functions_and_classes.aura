@@ -7,10 +7,10 @@ def greet(person: str) {
 }
 
 class User {
-    name: str
-    age: int
+    name: String
+    age: Int
     
-    def __init__(self, name: str, age: int) {
+    def __init__(self, name: String, age: Int) {
         self.name = name;
         self.age = age;
     }

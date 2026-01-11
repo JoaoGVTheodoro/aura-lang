@@ -1,16 +1,16 @@
 // Simple Counter Class
 class Counter {
-    private let count: int = 0
+    count: Int = 0
     
-    def increment() -> void {
+    def increment() {
         self.count = self.count + 1;
     }
     
-    def get_count() -> int {
+    def get_count() -> Int {
         return self.count;
     }
     
-    def reset() -> void {
+    def reset() {
         self.count = 0;
     }
 }
