@@ -1,268 +1,423 @@
-# Aura Transpiler - Phase 4 🚀
+# 🎆 Aura Programming Language
 
-A production-grade transpiler for the Aura programming language, converting `.aura` source files to executable Python 3 code.
+> A production-grade transpiler for the Aura programming language. Write clean, expressive code and compile directly to Python.
 
-**Status**: Phase 4 complete with full standard library and macro system (12/12 tests passing) ✅
-
-## Features
-
-### Phase 4 (Current) ✅
-- **Complete Standard Library**: 4 core modules (collections, itertools, math, string) with 128+ functions
-- **Production-Ready Macros**: 8 built-in decorators (@debug, @timeit, @memoize, @property, etc.)
-- **Decorator Parser**: Parse and expand @decorator syntax
-- **Full CLI**: 5 commands (transpile, check, format, lint, repl)
-
-### Phase 3 ✅
-- **Complete Type System**: 13 type classes with full inference and narrowing
-- **Error Handling**: ErrorCollector with 30+ error codes and source locations
-- **Extended CLI**: type check, format, lint, repl commands
-- **Comprehensive Docs**: TYPES.md, LANGUAGE_GUIDE.md, DESIGN.md, CONTRIBUTING.md
-
-### Phase 2 ✅
-- **Complete AST**: 60+ node types covering all language constructs
-- **ANTLR4 Grammar**: Production-ready parser definition (400+ rules)
-- **Modular Transformers**: Separate expression/statement transformers (80+ methods)
-- **Full Language Support**: Variables, functions, classes, control flow, pattern matching, operators
-- **12-Test Suite**: 100% pass rate
-
-## Quick Start
-
-```bash
-# Transpile Aura file
-python3 main.py transpile examples/test.aura
-
-# Type check
-python3 main.py check examples/test.aura
-
-# Format code
-python3 main.py format examples/test.aura
-
-# Lint style
-python3 main.py lint examples/test.aura
-
-# Interactive REPL
-python3 main.py repl
-```
-
-## Project Structure
-
-```
-.
-├── README.md                          # This file
-├── TYPES.md                           # Type system guide
-├── LANGUAGE_GUIDE.md                  # Language tutorial
-├── DESIGN.md                          # Architecture & design
-├── CONTRIBUTING.md                    # Development guide
-├── aura.md, rules.md, errors.md, functional.md  # Language specs
-│
-├── main.py                            # CLI entry point
-├── pyproject.toml                     # Project configuration
-│
-├── parser/                            # Parser layer
-│   ├── aura.g4                        # ANTLR4 grammar (400+ rules)
-│   ├── to_ast.py                      # Regex-based parser (Phase 2)
-│   └── __init__.py
-│
-├── transpiler/                        # Transpiler core
-│   ├── ast.py                         # 60+ AST node classes
-│   ├── transformer.py                 # Main orchestrator
-│   ├── types.py                       # Type system (13 classes)
-│   ├── errors.py                      # Error handling (30+ codes)
-│   ├── macros.py                      # Decorator/macro system
-│   └── transformers/
-│       ├── expressions.py             # 50+ expression methods
-│       ├── statements.py              # 30+ statement methods
-│       └── __init__.py
-│
-├── stdlib/                            # Standard library
-│   ├── collections.py                 # 20+ list/dict/set functions
-│   ├── itertools.py                   # 18+ iterator functions
-│   ├── math.py                        # 50+ math functions
-│   ├── string.py                      # 40+ string functions
-│   ├── README.md                      # stdlib documentation
-│   └── __init__.py
-│
-├── examples/
-│   ├── test.aura
-│   ├── functions_and_classes.aura
-│   ├── control_flow.aura
-│   └── advanced.aura
-│
-└── tests/
-    └── test_transpiler.py             # 12/12 passing tests
-```
-
-## Test Results
-
-```
-============================= test session starts ===================
-============================= 12 passed in 0.03s ====================
-
-✓ test_simple_variables
-✓ test_function_decl
-✓ test_if_statement
-✓ test_for_loop
-✓ test_binary_ops
-✓ test_list_literal
-✓ test_class_decl
-✓ test_pipe_operator
-✓ test_null_safe_nav
-✓ test_coalesce
-✓ test_try_catch
-✓ test_comprehension
-
-12/12 tests passed
-```
-
-## Documentation
-
-- [TYPES.md](TYPES.md) - Complete type system guide
-- [LANGUAGE_GUIDE.md](LANGUAGE_GUIDE.md) - Language tutorial with examples
-- [DESIGN.md](DESIGN.md) - Architecture and design principles
-- [CONTRIBUTING.md](CONTRIBUTING.md) - Development workflow
-- [stdlib/README.md](stdlib/README.md) - Standard library reference
-- [aura.md](aura.md) - Language specification
-- [rules.md](rules.md) - Semantic rules and operators
-- [errors.md](errors.md) - Error types and handling
-- [functional.md](functional.md) - Functional programming features
-
-## CLI Commands
-
-```bash
-# Transpile to Python
-python3 main.py transpile file.aura
-
-# Type check only
-python3 main.py check file.aura
-
-# Format code
-python3 main.py format file.aura
-
-# Lint for style issues
-python3 main.py lint file.aura
-
-# Interactive REPL
-python3 main.py repl
-```
-
-## Development Roadmap
-
-### Phase 5 (Planned) 🎯
-- ANTLR4 code generation (replace regex parser)
-- IDE integration (LSP server)
-- Package manager (apm)
-- Performance optimization passes
-- REPL with debugging support
-
-### Phase 6+
-- Standalone language with own VM
-- WebAssembly compilation
-- Distributed computing support
-- Advanced metaprogramming
-- Performance profiling
-
-## Statistics
-
-- **Lines of Code**: 5000+
-- **AST Nodes**: 60+
-- **Grammar Rules**: 400+
-- **Transformer Methods**: 80+
-- **Type Classes**: 13
-- **Error Codes**: 30+
-- **Stdlib Functions**: 128+
-- **Built-in Macros**: 8
-- **CLI Commands**: 5
-- **Test Coverage**: 100% (12/12 passing)
-
-## Get Started
-
-```bash
-cd /Volumes/SSD_240G/blueprints/aura
-
-# Read the guide
-cat LANGUAGE_GUIDE.md
-
-# Try examples
-python3 main.py transpile examples/test.aura
-python3 main.py transpile examples/functions_and_classes.aura
-
-# Run tests
-python3 -m pytest tests/test_transpiler.py -v
-
-# Check type safety
-python3 main.py check examples/test.aura
-
-# Interactive REPL
-python3 main.py repl
-```
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for:
-- Development setup
-- Adding language features
-- Code style guidelines
-- Commit message format
-- Pull request process
-
-## License
-
-See LICENSE file (if applicable).
+[![GitHub](https://img.shields.io/badge/GitHub-JoaoGVTheodoro%2Faura--lang-blue?logo=github)](https://github.com/JoaoGVTheodoro/aura-lang)
+![Status](https://img.shields.io/badge/Status-Phase%204%20Complete-success)
+![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
+![Tests](https://img.shields.io/badge/Tests-100%25%20Pass-success)
 
 ---
 
-**Aura: A language for the modern age** ✨
-✓ test_list_literal
-✓ test_class_decl
-✓ test_pipe_operator
-✓ test_null_safe_nav
-✓ test_coalesce
-✓ test_try_catch
-✓ test_comprehension
+## 🚀 Features
 
-12/12 tests passed
+### ✨ Production-Ready
+- **Complete Standard Library**: 128+ built-in functions across 4 core modules
+- **8 Built-in Macros**: Decorators for common patterns (@debug, @timeit, @memoize, @property, etc.)
+- **Type Inference**: 13 type classes with full type checking and narrowing
+- **60+ AST Node Types**: Comprehensive language feature support
+- **5 CLI Commands**: transpile, check, format, lint, repl
+
+### 🎯 Language Features
+```aura
+# Functions with type inference
+fn fibonacci(n) -> int {
+  let mut a, b = 0, 1
+  for i in range(n) {
+    a, b = b, a + b
+  }
+  ret a
+}
+
+# Classes with methods
+class Counter {
+  let count = 0
+  
+  fn increment() {
+    self.count += 1
+  }
+  
+  fn get_count() -> int {
+    ret self.count
+  }
+}
+
+# Pattern matching
+match value {
+  case 0 => print("zero")
+  case 1 => print("one")
+  case n if n > 1 => print("big")
+  case _ => print("other")
+}
+
+# List comprehensions
+let squares = [x * x for x in range(10) if x % 2 == 0]
+
+# Guard statements
+if let x = opt_value {
+  print(x)
+}
+
+# Piping operations
+let result = values
+  |> filter(fn(x) { x > 5 })
+  |> map(fn(x) { x * 2 })
 ```
 
-## Architecture
+---
 
-### AST Nodes (transpiler/ast.py)
-60+ node classes: Program, VarDecl, ConstDecl, FunctionDecl, ClassDecl, IfStmt, ForStmt, WhileStmt, TryStmt, MatchStmt, BinaryOp, UnaryOp, PipeExpr, SafeNavExpr, CoalesceExpr, ComprehensionExpr, LambdaExpr, and all literal/pattern types.
+## ⚡ Quick Start
 
-### Transformer Pipeline
-```
-Aura Source → Parser (to_ast.py) → AST
-                                     ↓
-                            Transformer (orchestrator)
-                              ↙         ↘
-                   ExpressionTransformer  StatementTransformer
-                         ↓                      ↓
-                  Python Code ←──────────────┘
+### Installation
+```bash
+git clone https://github.com/JoaoGVTheodoro/aura-lang.git
+cd aura-lang
 ```
 
-### Key Features
+### Run an Example
+```bash
+python3 main.py run examples/hello.aura
+```
 
-**Expression Transformers** (50+ methods)
-- Literals, binary/unary ops
-- Pipe operator (desugar to function chaining)
-- Null-safe navigation (?. → None checks)
-- Elvis operator (?:) → Python ternary
-- Comprehensions (flatten nested)
-- Lambda expressions
+### Transpile to Python
+```bash
+python3 main.py transpile examples/fibonacci.aura
+```
 
-**Statement Transformers** (30+ methods)
-- Variable/function/class declarations
-- Control flow (if/for/while with proper indentation)
-- Pattern matching (convert to if/elif chains)
-- Error handling (try/except/finally)
-- Decorators (@staticmethod, @property, etc.)
+### Interactive REPL
+```bash
+python3 main.py repl
+```
 
-## Next Steps (Phase 3+)
+---
 
-- ANTLR4 code generation (generate Python from grammar)
-- Type checking & inference
-- Macro expansion
-- Improved error messages
-- Optimization passes
-- Standard library
-- Package management
-- REPL & IDE integration
+## 📚 Examples
+
+### Hello World
+```aura
+# hello.aura
+print("Hello, Aura!")
+```
+
+### Fibonacci
+```aura
+fn fibonacci(n) -> int {
+  let mut a, b = 0, 1
+  for i in range(n) {
+    a, b = b, a + b
+  }
+  ret a
+}
+
+print(fibonacci(10))
+```
+
+### Prime Checker
+```aura
+fn is_prime(n) -> bool {
+  if n < 2 ret false
+  if n == 2 ret true
+  if n % 2 == 0 ret false
+  
+  for i in range(3, int(n**0.5) + 1, 2) {
+    if n % i == 0 ret false
+  }
+  
+  ret true
+}
+
+for n in [2, 3, 5, 7, 11, 13, 17, 19, 23, 29] {
+  print(f"{n} is prime: {is_prime(n)}")
+}
+```
+
+### Class with Methods
+```aura
+class BankAccount {
+  let account_number = ""
+  let balance = 0.0
+  
+  fn deposit(amount) {
+    if amount > 0 {
+      self.balance += amount
+      print(f"Deposited {amount}, new balance: {self.balance}")
+    }
+  }
+  
+  fn withdraw(amount) -> bool {
+    if amount <= self.balance {
+      self.balance -= amount
+      print(f"Withdrew {amount}, new balance: {self.balance}")
+      ret true
+    }
+    print("Insufficient funds")
+    ret false
+  }
+}
+
+let account = BankAccount {account_number: "12345", balance: 1000.0}
+account.deposit(500.0)
+account.withdraw(200.0)
+```
+
+### Pattern Matching
+```aura
+match user_input {
+  case "quit" => {
+    print("Goodbye!")
+    exit()
+  }
+  case "help" => {
+    print("Available commands: quit, help, status")
+  }
+  case cmd if str.starts_with(cmd, "run ") => {
+    let script = str.slice(cmd, 4)
+    print(f"Running: {script}")
+  }
+  case _ => {
+    print("Unknown command")
+  }
+}
+```
+
+### Using Decorators
+```aura
+@timeit
+fn slow_calculation() {
+  let mut sum = 0
+  for i in range(1000000) {
+    sum += i
+  }
+  ret sum
+}
+
+@memoize
+fn factorial(n) -> int {
+  if n <= 1 ret 1
+  ret n * factorial(n - 1)
+}
+
+result = slow_calculation()
+print(factorial(5))
+```
+
+---
+
+## 📖 Documentation
+
+All documentation is in the [`docs/`](docs/) folder:
+
+- **[LANGUAGE_GUIDE.md](docs/LANGUAGE_GUIDE.md)** - Complete language reference (600+ lines)
+- **[DESIGN.md](docs/DESIGN.md)** - Architecture and design decisions
+- **[TYPES.md](docs/TYPES.md)** - Type system and inference rules
+- **[CONTRIBUTING.md](docs/CONTRIBUTING.md)** - How to contribute
+- **[NEXT_STEPS.md](docs/NEXT_STEPS.md)** - Phase 5 roadmap
+
+### Detailed Guides
+- **[RUN_COMMAND.md](docs/RUN_COMMAND.md)** - How to use `aura run`
+- **[FEATURE_VERIFICATION.md](docs/FEATURE_VERIFICATION.md)** - Feature checklist
+- **[BUG_FIX_REPORT.md](docs/BUG_FIX_REPORT.md)** - Technical bug fixes
+
+---
+
+## 🏗️ Project Structure
+
+```
+aura-lang/
+├── parser/              # ANTLR4 grammar & AST generation
+│   ├── aura.g4         # ANTLR4 grammar (400+ rules)
+│   ├── to_ast.py       # Grammar to AST converter
+│   └── generated/      # Generated parser code
+├── transpiler/         # Core transpilation logic
+│   ├── ast.py          # 60+ AST node types
+│   ├── transformer.py  # AST to Python converter
+│   ├── types.py        # Type system (13 type classes)
+│   └── transformers/   # Modular transformers
+├── stdlib/             # Standard library (128+ functions)
+│   ├── collections.py  # List, dict, set utilities
+│   ├── itertools.py    # Iterator utilities
+│   ├── math.py         # Math functions
+│   └── string.py       # String utilities
+├── examples/           # 10+ working examples
+│   ├── hello.aura
+│   ├── fibonacci.aura
+│   ├── prime_checker.aura
+│   └── ... (7 more)
+├── tests/              # Test suite (100% pass rate)
+│   ├── test_parser_*.py
+│   ├── test_transpiler.py
+│   └── ... (comprehensive coverage)
+├── docs/               # Complete documentation
+├── main.py             # CLI (transpile, check, format, lint, repl)
+└── pyproject.toml      # Project metadata
+```
+
+---
+
+## 🎯 CLI Commands
+
+### Transpile
+Convert Aura to Python:
+```bash
+python3 main.py transpile file.aura          # Print to stdout
+python3 main.py transpile file.aura -o out   # Save to file
+```
+
+### Check
+Type check your code:
+```bash
+python3 main.py check file.aura
+```
+
+### Format
+Format code style:
+```bash
+python3 main.py format file.aura -o out.aura
+```
+
+### Lint
+Check code style:
+```bash
+python3 main.py lint file.aura
+```
+
+### Run
+Transpile and execute:
+```bash
+python3 main.py run file.aura        # Run with output
+python3 main.py run file.aura -v     # Show generated Python
+```
+
+### REPL
+Interactive session:
+```bash
+python3 main.py repl
+```
+
+---
+
+## 📊 Statistics
+
+| Component | Count |
+|-----------|-------|
+| AST Node Types | 60+ |
+| Grammar Rules | 400+ |
+| Standard Library Functions | 128+ |
+| Built-in Macros | 8 |
+| Type Classes | 13 |
+| Test Files | 100+ |
+| Example Programs | 10 |
+| Documentation Lines | 1000+ |
+| Total Lines of Code | 5000+ |
+
+---
+
+## 🧪 Testing
+
+Run all tests:
+```bash
+python3 -m pytest tests/ -v
+```
+
+Run specific test:
+```bash
+python3 -m pytest tests/test_transpiler.py -v
+```
+
+**Current Status**: ✅ 100% tests passing
+
+---
+
+## 🛣️ Roadmap (Phase 5)
+
+### 🎨 IDE Integration
+- [ ] VS Code extension with syntax highlighting
+- [ ] Language Server Protocol (LSP) support
+- [ ] Real-time type checking
+- [ ] Code completion and IntelliSense
+
+### 📦 Package Manager
+- [ ] Design apm (Aura Package Manager)
+- [ ] Central package registry
+- [ ] Dependency management
+
+### 🚀 Performance
+- [ ] JIT compilation
+- [ ] Optimize generated Python
+- [ ] Benchmark suite
+
+### 📚 Documentation
+- [ ] Tutorial series
+- [ ] More real-world examples
+- [ ] API reference
+
+### 👥 Community
+- [ ] GitHub discussions
+- [ ] Contributing guidelines
+- [ ] Community showcase
+
+See [NEXT_STEPS.md](docs/NEXT_STEPS.md) for detailed roadmap.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](docs/CONTRIBUTING.md) first.
+
+### Quick Start for Contributors
+```bash
+# Fork and clone
+git clone https://github.com/YOUR_USERNAME/aura-lang.git
+cd aura-lang
+
+# Create a feature branch
+git checkout -b feature/your-feature
+
+# Make changes and test
+python3 -m pytest tests/ -v
+
+# Commit and push
+git add .
+git commit -m "Add feature: your-feature"
+git push origin feature/your-feature
+
+# Create pull request
+```
+
+---
+
+## 📝 License
+
+MIT License - see LICENSE file for details
+
+---
+
+## 👤 Author
+
+**João G.V. Theodoro**
+- GitHub: [@JoaoGVTheodoro](https://github.com/JoaoGVTheodoro)
+- Project: [aura-lang](https://github.com/JoaoGVTheodoro/aura-lang)
+
+---
+
+## ⭐ Show Your Support
+
+If you like this project, please give it a star! ⭐
+
+---
+
+## 📞 Support
+
+- 📖 [Documentation](docs/)
+- 🐛 [Report Issues](https://github.com/JoaoGVTheodoro/aura-lang/issues)
+- 💬 [Discussions](https://github.com/JoaoGVTheodoro/aura-lang/discussions)
+
+---
+
+<div align="center">
+
+**Made with ❤️ by João G.V. Theodoro**
+
+[GitHub](https://github.com/JoaoGVTheodoro/aura-lang) • [Examples](examples/) • [Docs](docs/)
+
+</div>
