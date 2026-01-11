@@ -23,6 +23,13 @@ class Node:
         self.location = location
         return self
 
+
+class Expr(Node):
+    pass
+
+class Stmt(Node):
+    pass
+
 # ============================================================================
 # Top-level structures
 # ============================================================================
@@ -40,22 +47,25 @@ class Module(Node):
 # Declarations
 # ============================================================================
 
-class VarDecl(Node):
-    def __init__(self, name, mutable, type_annotation=None, value=None):
+class VarDecl(Stmt):
+    def __init__(self, name, mutable, type_annotation=None, value=None, visibility='public', is_static=False, is_volatile=False):
         self.name = name
         self.mutable = mutable
         self.type_annotation = type_annotation
         self.value = value
+        self.visibility = visibility
+        self.is_static = is_static
+        self.is_volatile = is_volatile
 
-class ConstDecl(Node):
+class ConstDecl(Stmt):
     def __init__(self, name, type_annotation=None, value=None):
         self.name = name
         self.type_annotation = type_annotation
         self.value = value
 
-class FunctionDecl(Node):
+class FunctionDecl(Stmt):
     def __init__(self, name, params, return_type=None, body=None, 
-                 is_async=False, type_params=None, decorators=None):
+                 is_async=False, type_params=None, decorators=None, visibility='public'):
         self.name = name
         self.params = params or []
         self.return_type = return_type
@@ -63,8 +73,9 @@ class FunctionDecl(Node):
         self.is_async = is_async
         self.type_params = type_params or []
         self.decorators = decorators or []
+        self.visibility = visibility
 
-class ClassDecl(Node):
+class ClassDecl(Stmt):
     def __init__(self, name, body, base_class=None, type_params=None, decorators=None):
         self.name = name
         self.body = body
@@ -72,13 +83,13 @@ class ClassDecl(Node):
         self.type_params = type_params or []
         self.decorators = decorators or []
 
-class TraitDecl(Node):
+class TraitDecl(Stmt):
     def __init__(self, name, members, type_params=None):
         self.name = name
         self.members = members
         self.type_params = type_params or []
 
-class TypeDecl(Node):
+class TypeDecl(Stmt):
     def __init__(self, name, type_expr, type_params=None):
         self.name = name
         self.type_expr = type_expr
@@ -98,7 +109,8 @@ class Parameter(Node):
 
 class Method(Node):
     def __init__(self, name, params, return_type=None, body=None, 
-                 is_static=False, is_classmethod=False, is_property=False):
+                 is_static=False, is_classmethod=False, is_property=False,
+                 visibility='public', is_volatile=False):
         self.name = name
         self.params = params
         self.return_type = return_type
@@ -106,64 +118,71 @@ class Method(Node):
         self.is_static = is_static
         self.is_classmethod = is_classmethod
         self.is_property = is_property
+        self.visibility = visibility
+        self.is_volatile = is_volatile
 
 # ============================================================================
 # Statements
 # ============================================================================
 
-class ExprStmt(Node):
+class ExprStmt(Stmt):
     def __init__(self, expr):
         self.expr = expr
 
-class IfStmt(Node):
+class IfStmt(Stmt):
     def __init__(self, condition, then_body, else_body=None):
         self.condition = condition
         self.then_body = then_body
         self.else_body = else_body
 
-class UnlessStmt(Node):
+class UnlessStmt(Stmt):
     def __init__(self, condition, body, else_body=None):
         self.condition = condition
         self.body = body
         self.else_body = else_body
 
-class GuardStmt(Node):
+class GuardStmt(Stmt):
     def __init__(self, condition, else_body):
         self.condition = condition
         self.else_body = else_body
 
-class WhileStmt(Node):
+class WhileStmt(Stmt):
     def __init__(self, condition, body):
         self.condition = condition
         self.body = body
 
-class UntilStmt(Node):
+class UntilStmt(Stmt):
     def __init__(self, condition, body):
         self.condition = condition
         self.body = body
 
-class ForStmt(Node):
+class ForStmt(Stmt):
     def __init__(self, pattern, iterable, body, step=None):
         self.pattern = pattern
         self.iterable = iterable
         self.body = body
         self.step = step
 
-class LoopStmt(Node):
+class LoopStmt(Stmt):
     def __init__(self, body):
         self.body = body
 
-class BreakStmt(Node):
+class BreakStmt(Stmt):
     pass
 
-class ContinueStmt(Node):
+class ContinueStmt(Stmt):
     pass
 
-class ReturnStmt(Node):
+class AssertStmt(Stmt):
+    def __init__(self, condition, message=None):
+        self.condition = condition
+        self.message = message
+
+class ReturnStmt(Stmt):
     def __init__(self, value=None):
         self.value = value
 
-class TryStmt(Node):
+class TryStmt(Stmt):
     def __init__(self, try_body, catch_clauses=None, finally_body=None):
         self.try_body = try_body
         self.catch_clauses = catch_clauses or []
@@ -175,12 +194,12 @@ class CatchClause(Node):
         self.var_name = var_name
         self.body = body
 
-class WithStmt(Node):
+class WithStmt(Stmt):
     def __init__(self, items, body):
         self.items = items  # list of (expr, optional_var_name) tuples
         self.body = body
 
-class MatchStmt(Node):
+class MatchStmt(Stmt):
     def __init__(self, expr, cases):
         self.expr = expr
         self.cases = cases
@@ -424,7 +443,13 @@ class Import(Node):
         self.module = module
         self.alias = alias
 
-class FromImport(Node):
+class ImportStmt(Stmt):
+    def __init__(self, module, items=None, alias=None):
+        self.module = module
+        self.items = items or []
+        self.alias = alias
+
+class FromImport(Stmt):
     def __init__(self, module, items):
         self.module = module
         self.items = items  # list of (name, optional_alias)

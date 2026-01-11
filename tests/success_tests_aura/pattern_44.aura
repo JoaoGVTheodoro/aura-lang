@@ -1,0 +1,6 @@
+// Pattern Match Test 44
+let data_44 = null;
+match data_44 {
+    case null { print("exact"); }
+    case _ { print("default"); }
+}

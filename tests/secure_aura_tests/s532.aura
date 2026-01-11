@@ -1,0 +1,8 @@
+// Security: Recursion Depth (7)
+def fib_56570(n: int) -> int {
+    if n <= 1 { return n; }
+    return fib_56570(n - 1) + fib_56570(n - 2);
+}
+
+let result = fib_56570(7);
+print(result);

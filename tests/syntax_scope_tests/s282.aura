@@ -1,0 +1,17 @@
+// Scope: Variable Shadowing
+let x = 15;
+print(x);
+
+{
+    let x = 43;
+    print(x);
+    
+    {
+        let x = 94;
+        print(x);
+    }
+    
+    print(x);
+}
+
+print(x);

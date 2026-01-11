@@ -1,0 +1,13 @@
+// Collections: Deduplication
+let items = [1, 2, 2, 3, 3, 3, 4, 4, 4, 4];
+let seen = [];
+let unique = [];
+
+for item in items {
+    unless seen |> contains(item) {
+        seen = [*seen, item];
+        unique = [*unique, item];
+    }
+}
+
+print(unique);

@@ -18,6 +18,61 @@ This example demonstrates the full spectrum of Aura features:
 // MODULE: Collections and Utilities
 // ============================================================================
 
+// Dummy definitions for execution
+let provided_name: str? = null
+let user_greeting: str? = "Hello"
+let is_holiday: bool = false
+let is_weekend: bool = true
+def work() { print("Working...") }
+def play() { print("Playing...") }
+let mut input_count = [0]
+def read_input() -> str {
+    input_count[0] = input_count[0] + 1
+    if input_count[0] > 3 { return "quit" }
+    return "42"
+}
+def process(input: str) { print("Processing: " + input) }
+def cleanup() { print("Cleaning up...") }
+def process_content(content: str) { print("Content: " + content) }
+def fibonacci(n: int) -> int {
+    if n <= 1 { return n }
+    return fibonacci(n - 1) + fibonacci(n - 2)
+}
+let user_input = "test"
+def validate_input(input: str) { print("Validating input: " + input) }
+def handle_unexpected_error() { print("Handling unexpected error...") }
+def handle_validation_error(e: Error) { print("Validation error: " + e.message) }
+let data = "input data"
+def validate(d: str) -> str { return d }
+def transform(d: str) -> str { return d.upper() }
+def save(d: str) -> str {
+    print("Saving: " + d)
+    return d
+}
+def debug(fn: any) -> any { return fn }
+def logged(level: str) -> fn<any, any> {
+    return (f) => { return f }
+}
+def fetch_user_data(id: int) -> any { return null }
+def process_user_data(data: any) { print("Processing user data") }
+def notify_user(msg: str) { print("Notifying: " + msg) }
+def perform_calculation(a: int, b: int) -> int { return a + b }
+def log_result(res: int) { print("Result: " + res) }
+def timeit(fn: any) -> any { return fn }
+def memoize(fn: any) -> any { return fn }
+def dataclass(cls: any) -> any { return cls }
+def upper(s: str) -> str { return s.upper() }
+def read_file(path: str) -> str { return "dummy\ndata" }
+
+// Basic Result type components for top-level usage
+class Ok { let value: any }
+class Err { let error: any }
+class User { let id: int; let name: str; let age: int; let email: str; let active: bool }
+
+class Address { let city: str }
+class UserProfile { let address: Address? }
+let user = UserProfile(address: Address(city: "San Francisco"))
+
 module collections {
     // Type declaration
     type Result<T, E> = Ok(T) | Err(E)
@@ -398,13 +453,8 @@ with open("file.txt") as file {
 
 // Basic class
 class Person {
-    name: str
-    age: int
-    
-    def __init__(self, name: str, age: int) {
-        self.name = name
-        self.age = int
-    }
+    let name: str
+    let age: int
     
     def greet(self) -> str {
         return f"Hello, I'm {self.name}"
@@ -450,27 +500,18 @@ class MathUtils {
 
 // Class with class method
 class Config {
-    _default_host: str = "localhost"
-    _default_port: int = 8080
+    let host: str = "localhost"
+    let port: int = 8080
     
     @classmethod
     def default(cls) -> Config {
         return cls("localhost", 8080)
     }
-    
-    def __init__(self, host: str, port: int) {
-        self.host = host
-        self.port = port
-    }
 }
 
 // Class with property decorator
 class Circle {
-    radius: float
-    
-    def __init__(self, radius: float) {
-        self.radius = radius
-    }
+    let radius: float
     
     @property
     def area(self) -> float {

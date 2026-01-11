@@ -1,0 +1,32 @@
+// Guessing Game
+let secret = 42;
+let mut guess = 0;
+let mut attempts = 0;
+
+print("I'm thinking of a number between 1 and 100!");
+print("Try to guess it!");
+
+until guess == secret {
+    attempts = attempts + 1;
+    
+    // Simulate input (in real Aura would be user input)
+    guess = 35 + (attempts % 15);
+    
+    print("Guess: ");
+    print(guess);
+    
+    if guess < secret {
+        print("Too low! Try again.");
+    } else if guess > secret {
+        print("Too high! Try again.");
+    } else {
+        print("Correct! You got it!");
+        print("Attempts: ");
+        print(attempts);
+    }
+    
+    if attempts > 10 {
+        print("Game over!");
+        break;
+    }
+}

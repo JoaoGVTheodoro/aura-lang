@@ -1,0 +1,17 @@
+// OOP: Polymorphism
+class ImplC76262Bt {
+    public def render() -> str { return "base"; }
+}
+
+class C72458Ue extends ImplC76262Bt {
+    public def render() -> str { return "child1"; }
+}
+
+class BaseC32395Ih extends ImplC76262Bt {
+    public def render() -> str { return "child2"; }
+}
+
+let objects = [ImplC76262Bt(), C72458Ue(), BaseC32395Ih()];
+for obj in objects {
+    print(obj.render());
+}

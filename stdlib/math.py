@@ -8,6 +8,12 @@ E = math.e
 TAU = math.tau
 INF = math.inf
 NAN = math.nan
+# Lowercase aliases
+pi = PI
+e = E
+tau = TAU
+inf = INF
+nan = NAN
 
 # Basic functions
 def abs(x):

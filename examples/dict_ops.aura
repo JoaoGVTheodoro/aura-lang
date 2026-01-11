@@ -1,0 +1,23 @@
+// Dictionary Operations
+let person = {
+    "name": "Alice",
+    "age": 30,
+    "city": "São Paulo",
+    "profession": "Engineer"
+};
+
+print("Name: ");
+print(person["name"]);
+
+print("Age: ");
+print(person["age"]);
+
+print("City: ");
+print(person["city"]);
+
+// Iterate over entries
+print("Profile: ");
+for key in ["name", "age", "city"] {
+    print(key);
+    print(person[key]);
+}

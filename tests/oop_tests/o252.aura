@@ -1,0 +1,14 @@
+// OOP: Simple Inheritance
+class RealC37711Nl {
+    let value: int = 48
+    public def get_value() -> int { return self.value; }
+    public def double_value() -> int { return self.value * 2; }
+}
+
+class ConcreteC63488Sx extends RealC37711Nl {
+    public def double_value() -> int { return self.value * 3; }
+}
+
+let obj = ConcreteC63488Sx(value: 48);
+print(obj.get_value());
+print(obj.double_value());

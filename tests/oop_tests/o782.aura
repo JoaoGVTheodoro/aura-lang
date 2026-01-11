@@ -1,0 +1,20 @@
+// OOP: Delegation
+class RealC30125Lm {
+    public let data: int = 0
+    public def process() -> int { return self.data * 2; }
+}
+
+class BaseC73402Wa {
+    private let delegate: RealC30125Lm
+    
+    def init(t: RealC30125Lm) { self.delegate = t; }
+    
+    public def process() -> int {
+        return self.delegate.process() + 10;
+    }
+}
+
+let target_obj = RealC30125Lm();
+target_obj.data = 25;
+let delegator_obj = BaseC73402Wa(t: target_obj);
+print(delegator_obj.process());

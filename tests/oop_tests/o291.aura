@@ -1,0 +1,21 @@
+// OOP: Composition
+class ConcreteC39473Iz {
+    public let data: int = 68
+    public def process() -> int { return self.data * 2; }
+}
+
+class MockC46612Lu {
+    private let component: ConcreteC39473Iz
+    
+    def init(comp: ConcreteC39473Iz) {
+        self.component = comp;
+    }
+    
+    public def transform() -> int {
+        return self.component.process() + 10;
+    }
+}
+
+let inner_obj = ConcreteC39473Iz(data: 68);
+let outer_obj = MockC46612Lu(comp: inner_obj);
+print(outer_obj.transform());

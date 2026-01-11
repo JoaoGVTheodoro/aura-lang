@@ -1,0 +1,7 @@
+// Basic Type Test 20
+let x: none = null;
+let mut y = null;
+const Z = null;
+print(x);
+print(y);
+print(Z);

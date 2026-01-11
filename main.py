@@ -36,6 +36,8 @@ def cmd_transpile(path: str, output: str = None, verbose: bool = False) -> int:
         
         return 0
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         print(f"Error transpiling {path}: {e}", file=sys.stderr)
         return 2
 
@@ -182,6 +184,45 @@ def cmd_lint(path: str) -> int:
         return 2
 
 
+def cmd_run(path: str, verbose: bool = False) -> int:
+    """Run Aura file by transpiling and executing."""
+    try:
+        ast = parse_file(path)
+    except FileNotFoundError:
+        print(f"Error: File not found: {path}", file=sys.stderr)
+        return 2
+    except Exception as e:
+        print(f"Error parsing {path}: {e}", file=sys.stderr)
+        return 2
+    
+    try:
+        t = Transformer()
+        code = t.transform(ast)
+        
+        if verbose:
+            print(f"# Generated Python code:", file=sys.stderr)
+            print(f"# {'-'*60}", file=sys.stderr)
+            for i, line in enumerate(code.split('\n'), 1):
+                print(f"# {i:3d} | {line}", file=sys.stderr)
+            print(f"# {'-'*60}", file=sys.stderr)
+        
+        # Execute the generated Python code
+        try:
+            exec(code)
+            return 0
+        except Exception as e:
+            print(f"Runtime error: {e}", file=sys.stderr)
+            import traceback
+            traceback.print_exc()
+            return 1
+    
+    except Exception as e:
+        print(f"Error transpiling {path}: {e}", file=sys.stderr)
+        import traceback
+        traceback.print_exc()
+        return 2
+
+
 def cmd_repl() -> int:
     """Interactive REPL for Aura."""
     print("Aura REPL v0.3 (type 'exit' to quit)")
@@ -243,6 +284,8 @@ Examples:
   aura check file.aura                  Type check only
   aura format file.aura                 Format source code
   aura lint file.aura                   Check style warnings
+  aura run file.aura                    Run Aura file
+  aura run file.aura -v                 Run with Python code output
   aura repl                             Start interactive REPL
         """
     )
@@ -270,6 +313,11 @@ Examples:
     lnt = sub.add_parser('lint', help='Check style and conventions')
     lnt.add_argument('path', help='Source file (.aura)')
     
+    # run command
+    run = sub.add_parser('run', help='Run Aura file')
+    run.add_argument('path', help='Source file (.aura)')
+    run.add_argument('-v', '--verbose', action='store_true', help='Show generated Python code')
+    
     # repl command
     sub.add_parser('repl', help='Start interactive REPL')
     
@@ -283,6 +331,8 @@ Examples:
         return cmd_format(args.path, args.output, args.width)
     elif args.cmd == 'lint':
         return cmd_lint(args.path)
+    elif args.cmd == 'run':
+        return cmd_run(args.path, args.verbose)
     elif args.cmd == 'repl':
         return cmd_repl()
     else:

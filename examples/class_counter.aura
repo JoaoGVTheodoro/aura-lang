@@ -1,0 +1,33 @@
+// Simple Counter Class
+class Counter {
+    private let count: int = 0
+    
+    def increment() -> void {
+        self.count = self.count + 1;
+    }
+    
+    def get_count() -> int {
+        return self.count;
+    }
+    
+    def reset() -> void {
+        self.count = 0;
+    }
+}
+
+let counter = Counter();
+
+print("Initial: ");
+print(counter.get_count());
+
+counter.increment();
+counter.increment();
+counter.increment();
+
+print("After 3 increments: ");
+print(counter.get_count());
+
+counter.reset();
+
+print("After reset: ");
+print(counter.get_count());

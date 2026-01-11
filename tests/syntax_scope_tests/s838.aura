@@ -1,0 +1,15 @@
+// Scope: Nested Blocks (depth=4)
+let outer = 5;
+{
+    let inner_0 = 5;
+    {
+        let inner_1 = 48;
+        {
+            let inner_2 = 80;
+            {
+                let inner_3 = 99;
+            print(outer);
+            }
+        }
+    }
+}

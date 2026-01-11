@@ -1,0 +1,15 @@
+// Security: Null Safety
+let v_57046: int? = null
+let v_13872: int? = 42
+
+guard v_13872 != null else {
+    print("null value");
+    return;
+}
+
+let result = v_13872 ?? 0
+print(result);
+
+unless v_57046 == null {
+    print("has value");
+}

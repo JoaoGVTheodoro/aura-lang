@@ -1,0 +1,10 @@
+// Scope: Scope Exit
+let resource = "acquired";
+
+{
+    print(resource);
+    let local = 42;
+    print(local);
+}
+
+print("scope exited");

@@ -9,6 +9,7 @@ class Transformer:
         self.stmt_transformer = StatementTransformer()
     
     def transform(self, node):
+        # print(f"DEBUG: Transform {type(node)}")
         if isinstance(node, Program):
             return self._transform_program(node)
         elif isinstance(node, Import):
@@ -17,17 +18,13 @@ class Transformer:
             return self._transform_from_import(node)
         elif isinstance(node, Module):
             return self._transform_module(node)
-        elif isinstance(node, (VarDecl, ConstDecl, FunctionDecl, ClassDecl,
-                              IfStmt, UnlessStmt, GuardStmt,
-                              WhileStmt, UntilStmt, ForStmt, LoopStmt,
-                              BreakStmt, ContinueStmt, ReturnStmt,
-                              TryStmt, WithStmt, MatchStmt,
-                              ExprStmt, Method, TypeDecl, TraitDecl)):
+        elif isinstance(node, Stmt):
             return self.stmt_transformer.transform(node)
         elif isinstance(node, Expr):
             # Support old Expr node wrapper
             return self.expr_transformer.transform(node)
         else:
+            print(f"DEBUG: Fallback for {type(node)}. Is Stmt? {isinstance(node, Stmt)}. Stmt class: {Stmt}", flush=True)
             # Fallback for other expression types
             try:
                 return self.expr_transformer.transform(node)

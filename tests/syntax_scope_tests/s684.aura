@@ -1,0 +1,10 @@
+// Scope: Basic Scope
+let outer_26874 = 77;
+
+{
+    let inner_69249 = 97;
+    print(outer_26874);
+    print(inner_69249);
+}
+
+print(outer_26874);

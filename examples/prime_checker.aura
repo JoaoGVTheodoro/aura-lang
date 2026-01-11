@@ -1,0 +1,30 @@
+// Prime Number Checker - Iterative
+print("Prime numbers between 1 and 30:");
+
+for num in 1..30 {
+    if num < 2 {
+        // Not prime
+        print("");
+    } else if num == 2 {
+        print(num);
+    } else if num % 2 == 0 {
+        // Even numbers (skip)
+        print("");
+    } else {
+        let i = 3;
+        let is_prime = true;
+        
+        until i * i > num {
+            if num % i == 0 {
+                is_prime = false;
+            }
+            i = i + 2;
+        }
+        
+        if is_prime {
+            print(num);
+        }
+    }
+}
+
+

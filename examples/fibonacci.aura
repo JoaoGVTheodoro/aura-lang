@@ -1,0 +1,14 @@
+// Fibonacci Sequence - Iterative
+let n = 10;
+let a = 0;
+let b = 1;
+
+print("Fibonacci sequence:");
+
+for i in 1..n {
+    print(a);
+    let temp = a + b;
+    a = b;
+    b = temp;
+}
+

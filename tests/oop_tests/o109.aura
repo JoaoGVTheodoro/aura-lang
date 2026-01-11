@@ -1,0 +1,21 @@
+// OOP: Composition
+class RealC96385Nd {
+    public let data: int = 87
+    public def process() -> int { return self.data * 2; }
+}
+
+class C15001Oz {
+    private let component: RealC96385Nd
+    
+    def init(comp: RealC96385Nd) {
+        self.component = comp;
+    }
+    
+    public def transform() -> int {
+        return self.component.process() + 10;
+    }
+}
+
+let inner_obj = RealC96385Nd(data: 87);
+let outer_obj = C15001Oz(comp: inner_obj);
+print(outer_obj.transform());

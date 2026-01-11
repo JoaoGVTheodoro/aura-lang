@@ -1,0 +1,13 @@
+// Security: Large Collection (size=389)
+let items = [];
+for i in 1..389 {
+    items = [*items, i];
+}
+
+let count = 0;
+for item in items {
+    if item % 2 == 0 {
+        count = count + 1;
+    }
+}
+print(count);

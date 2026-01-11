@@ -1,0 +1,15 @@
+// Factorial Calculator - Iterative
+let numbers = [1, 2, 3, 4, 5];
+
+for num in numbers {
+    let result = 1;
+    let i = 1;
+    
+    until i > num {
+        result = result * i;
+        i = i + 1;
+    }
+    
+    print(result);
+}
+

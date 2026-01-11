@@ -1,4 +1,5 @@
 """Aura Standard Library - Collections module."""
+import builtins
 
 def list_from(*items):
     """Create a list from items."""
@@ -6,18 +7,18 @@ def list_from(*items):
 
 def list_map(fn, items):
     """Map function over list."""
-    return list(map(fn, items))
+    return list(builtins.map(fn, items))
 
 def list_filter(predicate, items):
     """Filter list by predicate."""
-    return list(filter(predicate, items))
+    return list(builtins.filter(predicate, items))
 
 def list_reduce(fn, items, initial=None):
     """Reduce list to single value."""
-    from functools import reduce
+    from functools import reduce as py_reduce
     if initial is not None:
-        return reduce(fn, items, initial)
-    return reduce(fn, items)
+        return py_reduce(fn, items, initial)
+    return py_reduce(fn, items)
 
 def list_find(predicate, items):
     """Find first item matching predicate."""
@@ -139,6 +140,9 @@ def set_difference(a, *rest):
     return result
 
 # Aliases for convenience
+map = list_map
+filter = list_filter
+reduce = list_reduce
 map_list = list_map
 filter_list = list_filter
 reduce_list = list_reduce
