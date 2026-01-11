@@ -41,17 +41,17 @@ Complete documentation for the Aura Programming Language.
 
 ## 📋 Document Index
 
-| Document | Purpose | Length |
-|----------|---------|--------|
-| LANGUAGE_GUIDE.md | Language syntax and features | 600+ lines |
-| DESIGN.md | Architecture and design | 400+ lines |
-| TYPES.md | Type system reference | 300+ lines |
-| FEATURE_VERIFICATION.md | Feature checklist | 400+ lines |
-| CONTRIBUTING.md | Contribution guidelines | 250+ lines |
-| RUN_COMMAND.md | CLI usage guide | 150+ lines |
-| NEXT_STEPS.md | Phase 5 roadmap | 300+ lines |
-| PROJECT_SUMMARY.md | Project overview | 300+ lines |
-| CHANGELOG.md | Version history | 300+ lines |
+| Document                | Purpose                      | Length     |
+| ----------------------- | ---------------------------- | ---------- |
+| LANGUAGE_GUIDE.md       | Language syntax and features | 600+ lines |
+| DESIGN.md               | Architecture and design      | 400+ lines |
+| TYPES.md                | Type system reference        | 300+ lines |
+| FEATURE_VERIFICATION.md | Feature checklist            | 400+ lines |
+| CONTRIBUTING.md         | Contribution guidelines      | 250+ lines |
+| RUN_COMMAND.md          | CLI usage guide              | 150+ lines |
+| NEXT_STEPS.md           | Phase 5 roadmap              | 300+ lines |
+| PROJECT_SUMMARY.md      | Project overview             | 300+ lines |
+| CHANGELOG.md            | Version history              | 300+ lines |
 
 ---
 

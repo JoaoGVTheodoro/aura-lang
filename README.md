@@ -15,7 +15,7 @@
 - **Complete Standard Library**: 128+ built-in functions across 4 core modules
 - **8 Built-in Macros**: Decorators for common patterns (@debug, @timeit, @memoize, @property, etc.)
 - **Type Inference**: 13 type classes with full type checking and narrowing
-- **60+ AST Node Types**: Comprehensive language feature support
+- **72 AST Node Types**: Comprehensive language feature support
 - **5 CLI Commands**: transpile, check, format, lint, repl
 
 ### 🎯 Language Features
@@ -101,7 +101,7 @@ print("Hello, Aura!")
 
 ### Fibonacci
 ```aura
-fn fibonacci(n) -> int {
+def fibonacci(n) -> int {
   let mut a, b = 0, 1
   for i in range(n) {
     a, b = b, a + b
@@ -114,7 +114,7 @@ print(fibonacci(10))
 
 ### Prime Checker
 ```aura
-fn is_prime(n) -> bool {
+def is_prime(n) -> bool {
   if n < 2 ret false
   if n == 2 ret true
   if n % 2 == 0 ret false
@@ -137,14 +137,14 @@ class BankAccount {
   let account_number = ""
   let balance = 0.0
   
-  fn deposit(amount) {
+  def deposit(amount) {
     if amount > 0 {
       self.balance += amount
       print(f"Deposited {amount}, new balance: {self.balance}")
     }
   }
   
-  fn withdraw(amount) -> bool {
+  def withdraw(amount) -> bool {
     if amount <= self.balance {
       self.balance -= amount
       print(f"Withdrew {amount}, new balance: {self.balance}")
@@ -183,7 +183,7 @@ match user_input {
 ### Using Decorators
 ```aura
 @timeit
-fn slow_calculation() {
+def slow_calculation() {
   let mut sum = 0
   for i in range(1000000) {
     sum += i
@@ -192,7 +192,7 @@ fn slow_calculation() {
 }
 
 @memoize
-fn factorial(n) -> int {
+def factorial(n) -> int {
   if n <= 1 ret 1
   ret n * factorial(n - 1)
 }
@@ -298,17 +298,17 @@ python3 main.py repl
 
 ## 📊 Statistics
 
-| Component | Count |
-|-----------|-------|
-| AST Node Types | 60+ |
-| Grammar Rules | 400+ |
-| Standard Library Functions | 128+ |
-| Built-in Macros | 8 |
-| Type Classes | 13 |
-| Test Files | 100+ |
-| Example Programs | 10 |
-| Documentation Lines | 1000+ |
-| Total Lines of Code | 5000+ |
+| Component                  | Count |
+| -------------------------- | ----- |
+| AST Node Types             | 60+   |
+| Grammar Rules              | 400+  |
+| Standard Library Functions | 128+  |
+| Built-in Macros            | 8     |
+| Type Classes               | 13    |
+| Test Files                 | 100+  |
+| Example Programs           | 10    |
+| Documentation Lines        | 1000+ |
+| Total Lines of Code        | 5000+ |
 
 ---
 
