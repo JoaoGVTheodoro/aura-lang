@@ -1,7 +1,27 @@
 """Complete AST node definitions for Aura language based on docs."""
+from dataclasses import dataclass, field
+from typing import Optional, List, Any
+
+@dataclass
+class SourceLocation:
+    """Track source code location for error reporting."""
+    filename: str = ""
+    line: int = 0
+    column: int = 0
+    length: int = 0
+    
+    def __str__(self):
+        return f"{self.filename}:{self.line}:{self.column}"
 
 class Node:
-    pass
+    """Base AST node with optional source location."""
+    def __init__(self):
+        self.location: Optional[SourceLocation] = None
+    
+    def with_location(self, location: SourceLocation) -> 'Node':
+        """Attach source location to node."""
+        self.location = location
+        return self
 
 # ============================================================================
 # Top-level structures
