@@ -1,0 +1,715 @@
+"""
+COMPREHENSIVE AURA LANGUAGE EXAMPLE
+====================================
+
+This example demonstrates the full spectrum of Aura features:
+- Basic types and variables
+- Collections and comprehensions
+- Functions and higher-order functions
+- Classes and OOP
+- Pattern matching
+- Exception handling
+- Functional programming
+- Module system
+- Advanced operators
+"""
+
+// ============================================================================
+// MODULE: Collections and Utilities
+// ============================================================================
+
+module collections {
+    // Type declaration
+    type Result<T, E> = Ok(T) | Err(E)
+    type Option<T> = Some(T) | None
+    
+    // Generic function for filtering
+    def filter<T>(predicate: (T) -> bool, items: list[T]) -> list[T] {
+        return [x for x in items if predicate(x)]
+    }
+    
+    // Generic function for mapping
+    def map<T, R>(fn: (T) -> R, items: list[T]) -> list[R] {
+        return [fn(x) for x in items]
+    }
+    
+    // Generic reduce function
+    def reduce<T, R>(fn: (R, T) -> R, items: list[T], initial: R) -> R {
+        let mut result = initial
+        for item in items {
+            result = fn(result, item)
+        }
+        return result
+    }
+}
+
+// ============================================================================
+// BASIC TYPES AND OPERATIONS
+// ============================================================================
+
+// Primitive types and basic operations
+let age: int = 25
+let height: float = 1.78
+let name: str = "Alice"
+let active: bool = true
+let nothing: none = null
+
+// Collections
+let numbers: list[int] = [1, 2, 3, 4, 5]
+let scores: list[float] = [9.5, 8.7, 9.1]
+let tags: set[str] = {"rust", "python", "aura"}
+let coordinates: tuple[int, int] = (10, 20)
+let config: dict[str, any] = {
+    "host": "localhost",
+    "port": 8080,
+    "debug": true,
+    "workers": 4,
+}
+
+// Range expressions
+let sequence = 1..10              // 1 to 10 inclusive
+let exclusive_range = 0..<100     // 0 to 99
+let stepped_range = 0..100 step 5 // 0, 5, 10, ..., 100
+
+// ============================================================================
+// VARIABLES AND TYPE ANNOTATIONS
+// ============================================================================
+
+// Immutable variable with type inference
+let count = 42  // Type inferred as int
+
+// Mutable variable
+let mut counter = 0
+
+// Type annotations
+let message: str = "Hello, Aura!"
+let items: list[str] = ["apple", "banana", "cherry"]
+
+// Destructuring assignment
+let (x, y) = (5, 10)
+let [first, second, *rest] = [1, 2, 3, 4, 5]
+
+// ============================================================================
+// OPERATORS
+// ============================================================================
+
+// Arithmetic operators
+let sum = 10 + 5      // 15
+let diff = 10 - 3     // 7
+let product = 4 * 5   // 20
+let quotient = 20 / 4 // 5
+let remainder = 10 % 3 // 1
+let power = 2 ** 3    // 8
+
+// Comparison operators
+let equal = 5 == 5         // true
+let not_equal = 5 != 3     // true
+let less_than = 5 < 10     // true
+let greater_than = 10 > 5  // true
+let lte = 5 <= 5           // true
+let gte = 10 >= 10         // true
+
+// Logical operators
+let and_result = true and false   // false
+let or_result = true or false     // true
+let not_result = not true         // false
+
+// Special operators
+let contains = "hello" in "hello world"  // true
+let is_member = 2 in [1, 2, 3]          // true
+
+// ============================================================================
+// CONDITIONAL EXPRESSIONS
+// ============================================================================
+
+// Ternary operator
+let status = age >= 18 ? "adult" : "minor"
+
+// Elvis operator (value ?: default)
+let username = provided_name ?: "Guest"
+
+// Null coalescing operator
+let greeting = user_greeting ?? "Hello"
+
+// Null-safe navigation
+let city = user?.address?.city
+
+// ============================================================================
+// COLLECTION OPERATIONS
+// ============================================================================
+
+// List comprehensions
+let doubled = [x * 2 for x in numbers]
+let evens = [x for x in numbers if x % 2 == 0]
+let squares = [x * x for x in range(1, 6)]
+
+// Dictionary comprehensions
+let number_names = {x: f"num_{x}" for x in range(1, 4)}
+let inverted = {v: k for k, v in config}
+
+// Set comprehensions
+let unique_chars = {c for c in "hello"}
+
+// Nested comprehensions
+let matrix = [[i*j for j in range(1, 4)] for i in range(1, 4)]
+
+// Flattened list
+let flat = [[1, 2], [3, 4], [5, 6]]
+let flattened = [item for sublist in flat for item in sublist]
+
+// ============================================================================
+// FUNCTIONS
+// ============================================================================
+
+// Simple function
+def greet(name: str) -> str {
+    return f"Hello, {name}!"
+}
+
+// Function with default parameters
+def welcome(name: str, greeting: str = "Welcome") -> str {
+    return f"{greeting}, {name}!"
+}
+
+// Function with multiple parameters
+def add(a: int, b: int) -> int {
+    return a + b
+}
+
+// Function with variadic parameters
+def sum_all(*numbers: int) -> int {
+    let mut total = 0
+    for num in numbers {
+        total += num
+    }
+    return total
+}
+
+// Function returning tuple
+def divide_with_remainder(a: int, b: int) -> tuple[int, int] {
+    return (a / b, a % b)
+}
+
+// Function with Result type
+def safe_divide(a: float, b: float) -> Result<float, str> {
+    if b == 0.0 {
+        return Err("Division by zero")
+    }
+    return Ok(a / b)
+}
+
+// Lambda expressions
+let double = (x) => x * 2
+let is_positive = (n) => n > 0
+let greet_user = (name) => f"Hi, {name}!"
+
+// Higher-order function
+def apply_twice(fn: (int) -> int, value: int) -> int {
+    return fn(fn(value))
+}
+
+// Function returning function
+def make_multiplier(factor: int) -> (int) -> int {
+    return (x) => x * factor
+}
+
+// Recursive function
+def fibonacci(n: int) -> int {
+    if n <= 1 {
+        return n
+    }
+    return fibonacci(n - 1) + fibonacci(n - 2)
+}
+
+// Function with guard
+def process_data(data: any?) -> str {
+    guard data != null else {
+        return "No data provided"
+    }
+    return f"Processing: {data}"
+}
+
+// Closure example
+def make_counter() -> () -> int {
+    let mut count = 0
+    return () => {
+        count += 1
+        return count
+    }
+}
+
+// ============================================================================
+// PATTERN MATCHING
+// ============================================================================
+
+// Match statement with literals
+def describe_number(n: int) -> str {
+    match n {
+        case 0 { return "zero" }
+        case 1 { return "one" }
+        case 2 { return "two" }
+        case _ { return f"number: {n}" }
+    }
+}
+
+// Match with guards
+def classify_value(x: int) -> str {
+    match x {
+        case x if x < 0 { return "negative" }
+        case 0 { return "zero" }
+        case x if x > 0 { return "positive" }
+    }
+}
+
+// Match with destructuring
+def process_pair(pair: tuple[int, int]) -> str {
+    match pair {
+        case (0, 0) { return "origin" }
+        case (x, 0) { return f"on x-axis: {x}" }
+        case (0, y) { return f"on y-axis: {y}" }
+        case (x, y) { return f"point: ({x}, {y})" }
+    }
+}
+
+// Match with Result
+def handle_result(result: Result<int, str>) -> int {
+    match result {
+        case Ok(value) { return value * 2 }
+        case Err(error) { 
+            print(f"Error: {error}")
+            return -1
+        }
+    }
+}
+
+// ============================================================================
+// CONTROL FLOW
+// ============================================================================
+
+// If-else
+if age >= 18 {
+    print("You are an adult")
+} else if age >= 13 {
+    print("You are a teenager")
+} else {
+    print("You are a child")
+}
+
+// Unless (inverse if)
+unless is_holiday {
+    work()
+}
+
+// Guard (early return)
+def validate_user(user: dict) -> Result<dict, str> {
+    guard user.get("name") != null else {
+        return Err("Name is required")
+    }
+    guard user.get("age") > 0 else {
+        return Err("Age must be positive")
+    }
+    return Ok(user)
+}
+
+// While loop
+let mut i = 0
+while i < 10 {
+    print(i)
+    i += 1
+}
+
+// Until loop (opposite of while)
+let mut j = 0
+until j >= 10 {
+    print(j)
+    j += 1
+}
+
+// For loop with range
+for num in 1..5 {
+    print(num)
+}
+
+// For loop with enumeration
+for (index, item) in enumerate(["a", "b", "c"]) {
+    print(f"{index}: {item}")
+}
+
+// For loop with pattern matching
+let pairs = [(1, "a"), (2, "b"), (3, "c")]
+for (num, letter) in pairs {
+    print(f"{num} -> {letter}")
+}
+
+// Infinite loop with break
+loop {
+    let input = read_input()
+    if input == "quit" {
+        break
+    }
+    process(input)
+}
+
+// Continue statement
+for x in 1..10 {
+    if x % 2 == 0 {
+        continue
+    }
+    print(x)  // prints odd numbers only
+}
+
+// ============================================================================
+// EXCEPTION HANDLING
+// ============================================================================
+
+// Try-catch with multiple catch clauses
+try {
+    let file = open("data.txt")
+    let content = file.read()
+    process_content(content)
+} catch FileNotFoundError as e {
+    print(f"File not found: {e}")
+} catch PermissionError as e {
+    print(f"Permission denied: {e}")
+} catch {
+    print("Unknown error occurred")
+} finally {
+    cleanup()
+}
+
+// Try-catch with custom exceptions
+try {
+    validate_input(user_input)
+} catch ValueError as e {
+    handle_validation_error(e)
+} catch {
+    handle_unexpected_error()
+}
+
+// With statement for resource management
+with open("file.txt") as file {
+    content = file.read()
+    process(content)
+}  // File automatically closed
+
+// ============================================================================
+// CLASSES AND OOP
+// ============================================================================
+
+// Basic class
+class Person {
+    name: str
+    age: int
+    
+    def __init__(self, name: str, age: int) {
+        self.name = name
+        self.age = int
+    }
+    
+    def greet(self) -> str {
+        return f"Hello, I'm {self.name}"
+    }
+    
+    def is_adult(self) -> bool {
+        return self.age >= 18
+    }
+}
+
+// Class inheritance
+class Employee extends Person {
+    job_title: str
+    salary: float
+    
+    def __init__(self, name: str, age: int, job_title: str, salary: float) {
+        super().__init__(name, age)
+        self.job_title = job_title
+        self.salary = salary
+    }
+    
+    def work(self) -> str {
+        return f"{self.name} is working as {self.job_title}"
+    }
+    
+    def get_annual_salary(self) -> float {
+        return self.salary * 12
+    }
+}
+
+// Class with static method
+class MathUtils {
+    @staticmethod
+    def add(a: int, b: int) -> int {
+        return a + b
+    }
+    
+    @staticmethod
+    def multiply(a: int, b: int) -> int {
+        return a * b
+    }
+}
+
+// Class with class method
+class Config {
+    _default_host: str = "localhost"
+    _default_port: int = 8080
+    
+    @classmethod
+    def default(cls) -> Config {
+        return cls("localhost", 8080)
+    }
+    
+    def __init__(self, host: str, port: int) {
+        self.host = host
+        self.port = port
+    }
+}
+
+// Class with property decorator
+class Circle {
+    radius: float
+    
+    def __init__(self, radius: float) {
+        self.radius = radius
+    }
+    
+    @property
+    def area(self) -> float {
+        return 3.14159 * self.radius * self.radius
+    }
+    
+    @property
+    def circumference(self) -> float {
+        return 2 * 3.14159 * self.radius
+    }
+}
+
+// Trait definition
+trait Drawable {
+    def draw(self) -> str
+    def get_color(self) -> str
+}
+
+// ============================================================================
+// ADVANCED FUNCTIONAL PROGRAMMING
+// ============================================================================
+
+// Function composition
+def compose<T, R, S>(f: (R) -> S, g: (T) -> R) -> (T) -> S {
+    return (x) => f(g(x))
+}
+
+// Pipe operator
+let result = data
+    |> validate
+    |> transform
+    |> save
+
+// Partial application
+def partial_add(a: int) -> (int) -> int {
+    return (b) => a + b
+}
+
+let add_five = partial_add(5)
+let result_ten = add_five(5)  // 10
+
+// Memoization pattern
+def memoize<T, R>(fn: (T) -> R) -> (T) -> R {
+    let cache: dict[str, R] = {}
+    return (x) => {
+        let key = str(x)
+        if key in cache {
+            return cache[key]
+        }
+        let result = fn(x)
+        cache[key] = result
+        return result
+    }
+}
+
+// ============================================================================
+// STANDARD LIBRARY USAGE
+// ============================================================================
+
+import stdlib.collections {filter, map, reduce}
+import stdlib.itertools {range_iter, chain, combinations}
+import stdlib.math {sqrt, sin, cos, pi}
+import stdlib.string {upper, lower, trim}
+
+// Using stdlib functions
+let doubled_list = map((x) => x * 2, [1, 2, 3, 4, 5])
+let even_numbers = filter((x) => x % 2 == 0, [1, 2, 3, 4, 5, 6])
+let sum_result = reduce((acc, x) => acc + x, [1, 2, 3, 4, 5], 0)
+
+// String utilities
+let upper_name = upper("alice")
+let trimmed = trim("  hello  ")
+
+// Math utilities
+let root = sqrt(16.0)
+let angle = sin(pi / 2)
+
+// ============================================================================
+// DECORATORS AND MACROS
+// ============================================================================
+
+// Function with debug decorator
+@debug
+def expensive_computation(n: int) -> int {
+    let mut result = 0
+    for i in 0..n {
+        result += i
+    }
+    return result
+}
+
+// Function with timing decorator
+@timeit
+def load_data(file: str) -> list {
+    return read_file(file).split("\n")
+}
+
+// Function with memoization
+@memoize
+def fibonacci_cached(n: int) -> int {
+    if n <= 1 {
+        return n
+    }
+    return fibonacci_cached(n - 1) + fibonacci_cached(n - 2)
+}
+
+// Class with dataclass decorator
+@dataclass
+class Point {
+    x: float
+    y: float
+}
+
+// ============================================================================
+// COMPREHENSIVE EXAMPLE: Data Processing Pipeline
+// ============================================================================
+
+// Type definitions for pipeline
+type User = {
+    id: int,
+    name: str,
+    age: int,
+    email: str,
+    active: bool,
+}
+
+type ProcessResult = Ok(list[User]) | Err(str)
+
+// Data validation
+def validate_user(user: dict) -> Result<User, str> {
+    if "id" not in user {
+        return Err("Missing id")
+    }
+    if "name" not in user {
+        return Err("Missing name")
+    }
+    if user["age"] < 0 {
+        return Err("Invalid age")
+    }
+    return Ok(user as User)
+}
+
+// Data transformation
+def enrich_user(user: User) -> User {
+    return {
+        ...user,
+        "name": upper(user["name"]),
+        "processed": true,
+    }
+}
+
+// Data filtering
+def is_adult(user: User) -> bool {
+    return user["age"] >= 18
+}
+
+// Main processing function
+def process_users(raw_users: list[dict]) -> ProcessResult {
+    try {
+        // Validate all users
+        let validated: list[User] = []
+        for raw in raw_users {
+            match validate_user(raw) {
+                case Ok(user) { validated.append(user) }
+                case Err(e) { 
+                    print(f"Validation error: {e}")
+                    continue
+                }
+            }
+        }
+        
+        // Filter adults and enrich
+        let adults = [u for u in validated if is_adult(u)]
+        let enriched = [enrich_user(u) for u in adults]
+        
+        // Sort by name
+        let sorted_users = sorted(enriched, key: (u) => u["name"])
+        
+        return Ok(sorted_users)
+    } catch Exception as e {
+        return Err(f"Processing failed: {e}")
+    }
+}
+
+// ============================================================================
+// EXAMPLE USAGE
+// ============================================================================
+
+// Create test data
+let users = [
+    {"id": 1, "name": "alice", "age": 25, "email": "alice@example.com", "active": true},
+    {"id": 2, "name": "bob", "age": 17, "email": "bob@example.com", "active": true},
+    {"id": 3, "name": "charlie", "age": 30, "email": "charlie@example.com", "active": false},
+    {"id": 4, "name": "diana", "age": 22, "email": "diana@example.com", "active": true},
+]
+
+// Process data
+let result = process_users(users)
+
+// Handle result
+match result {
+    case Ok(processed) {
+        print(f"Successfully processed {len(processed)} users")
+        for user in processed {
+            print(f"  - {user['name']} ({user['age']})")
+        }
+    }
+    case Err(error) {
+        print(f"Error: {error}")
+    }
+}
+
+// ============================================================================
+// TESTING AND ASSERTIONS
+// ============================================================================
+
+// Test functions
+def test_add() {
+    assert add(2, 3) == 5, "add(2, 3) should equal 5"
+    print("✓ test_add passed")
+}
+
+def test_fibonacci() {
+    assert fibonacci(0) == 0, "fibonacci(0) should be 0"
+    assert fibonacci(1) == 1, "fibonacci(1) should be 1"
+    assert fibonacci(5) == 5, "fibonacci(5) should be 5"
+    print("✓ test_fibonacci passed")
+}
+
+def test_list_operations() {
+    let nums = [1, 2, 3, 4, 5]
+    let evens = [x for x in nums if x % 2 == 0]
+    assert len(evens) == 2, "Should have 2 even numbers"
+    print("✓ test_list_operations passed")
+}
+
+// Run tests
+test_add()
+test_fibonacci()
+test_list_operations()
+
+print("\n✓ All examples executed successfully!")
