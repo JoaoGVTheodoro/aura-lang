@@ -196,17 +196,67 @@ class Parser:
         return Program(statements)
 
     # --- Statements ---
+    def parse_modifiers(self):
+        """Parse visibility and other modifiers."""
+        visibility = 'public'
+        is_static = False
+        is_volatile = False
+        
+        while self.peek().value in ['public', 'private', 'protected', 'static', 'volatile']:
+            val = self.consume().value
+            if val in ['public', 'private', 'protected']:
+                visibility = val
+            elif val == 'static':
+                is_static = True
+            elif val == 'volatile':
+                is_volatile = True
+        
+        return visibility, is_static, is_volatile
+
     def parse_statement(self):
+        # 1. Handle Decorators and Modifiers (Prefixes)
+        decorators = []
+        visibility = 'public'
+        is_static = False
+        is_volatile = False
+        
+        has_prefix = False
+        
+        while True:
+            token = self.peek()
+            if token.value == '@':
+                has_prefix = True
+                # Parse decorators
+                while self.match('@'):
+                    dec_name = self.consume(expected_type='IDENT').value
+                    dec_args = []
+                    if self.match('('):
+                        if not self.check(')'):
+                            while True:
+                                dec_args.append(self.parse_expression())
+                                if not self.match(','): break
+                        self.consume(expected_value=')')
+                    decorators.append(Decorator(dec_name, dec_args))
+            elif token.value in ['public', 'private', 'protected', 'static', 'volatile']:
+                has_prefix = True
+                v, s, vol = self.parse_modifiers()
+                # Last visibility wins, flags accumulate
+                if v != 'public': visibility = v
+                if s: is_static = True
+                if vol: is_volatile = True
+            else:
+                break
+        
         token = self.peek()
         
         if token.value == 'let':
-            return self.parse_var_decl()
+            return self.parse_var_decl(visibility, is_static, is_volatile)
         elif token.value == 'const':
             return self.parse_const_decl()
-        elif token.value == 'def' or token.value == 'fn' or token.value == 'async':
-            return self.parse_function_decl()
+        elif token.value == 'def' or token.value == 'async':
+            return self.parse_function_decl(decorators, visibility, is_static, is_volatile)
         elif token.value == 'class':
-            return self.parse_class_decl()
+            return self.parse_class_decl(decorators, visibility, is_static, is_volatile)
         elif token.value == 'module':
             return self.parse_module_decl()
         elif token.value == 'type':
@@ -217,19 +267,12 @@ class Parser:
              return self.parse_import_stmt()
         elif token.value == 'if':
             return self.parse_if_stmt()
-        elif token.value == 'unless':
-            return self.parse_unless_stmt()
         elif token.value == 'while':
             return self.parse_while_stmt()
-        elif token.value == 'until':
-            return self.parse_until_stmt()
         elif token.value == 'for':
             return self.parse_for_stmt()
-        elif token.value == 'loop':
-            return self.parse_loop_stmt()
         elif token.value == 'return':
             return self.parse_return_stmt()
-        elif token.value == 'break':
             self.consume()
             if self.check(';'): self.consume()
             return BreakStmt()
@@ -237,8 +280,6 @@ class Parser:
             self.consume()
             if self.check(';'): self.consume()
             return ContinueStmt()
-        elif token.value == 'guard':
-            return self.parse_guard_stmt()
         
         elif token.value == 'assert':
             return self.parse_assert_stmt()
@@ -254,34 +295,6 @@ class Parser:
              expr = self.parse_expression()
              if self.check(';'): self.consume()
              return ExprStmt(expr)
-        elif token.value == '@':
-             # Parse decorators
-             decorators = []
-             while self.match('@'):
-                 dec_name = self.consume(expected_type='IDENT').value
-                 dec_args = []
-                 if self.match('('):
-                     if not self.check(')'):
-                         while True:
-                             dec_args.append(self.parse_expression())
-                             if not self.match(','): break
-                     self.consume(expected_value=')')
-                 decorators.append(Decorator(dec_name, dec_args))
-             
-             # Next must be function or class
-             if self.check('def') or self.check('fn') or self.check('async'):
-                 decl = self.parse_function_decl()
-                 decl.decorators = decorators
-                 return decl
-             elif self.check('class'):
-                 decl = self.parse_class_decl()
-                 decl.decorators = decorators 
-                 # Note: ClassDecl AST node check needed. 
-                 # If ClassDecl doesn't support decorators arg in __init__, we set definition attribute if possible
-                 # Or update ClassDecl.
-                 return decl
-             else:
-                 raise SyntaxError(f"Decorators must precede function or class, got {self.peek()}")
              
         elif token.value == 'case':
             return self.parse_case_stmt()
@@ -308,7 +321,7 @@ class Parser:
         return statements
 
     # --- Declarations ---
-    def parse_var_decl(self):
+    def parse_var_decl(self, visibility='public', is_static=False, is_volatile=False):
         self.consume(expected_value='let')
         mutable = False
         if self.match('mut'):
@@ -380,7 +393,7 @@ class Parser:
         if self.check(';'):
             self.consume()
             
-        return VarDecl(name, mutable, type_annotation, value)
+        return VarDecl(name, mutable, type_annotation, value, visibility, is_static, is_volatile)
 
     def parse_const_decl(self):
         self.consume(expected_value='const')
@@ -394,16 +407,15 @@ class Parser:
         if self.check(';'): self.consume()
         return ConstDecl(name, type_annotation, value)
 
-    def parse_function_decl(self):
-        # Support both 'def' and 'fn'
+    def parse_function_decl(self, decorators=None, visibility='public', is_static=False, is_volatile=False):
+        # Support only 'def' (async def also supported)
         is_async = False
         if self.check('async'):
             self.consume()
             is_async = True
             
-        if self.check('def'): self.consume()
-        else: self.consume(expected_value='fn')
-            
+        self.consume(expected_value='def')
+        
         name = self.consume(expected_type='IDENT').value
         
         # Generic params: fn foo[T](...) OR fn foo<T>(...)
@@ -451,29 +463,25 @@ class Parser:
         else:
             body = self.parse_block()
             
-        return FunctionDecl(name, params, return_type, body, is_async=is_async, type_params=type_params)
+        return FunctionDecl(name, params, return_type, body, is_async=is_async, type_params=type_params, decorators=decorators, visibility=visibility, is_static=is_static, is_volatile=is_volatile)
 
-    def parse_class_decl(self):
+    def parse_class_decl(self, decorators=None, visibility='public', is_static=False, is_volatile=False):
         self.consume(expected_value='class')
         name = self.consume(expected_type='IDENT').value
         
-        # Generics
-        if self.match('[') or self.match('<'):
+        # Generics: Strict [T] only (Zen of Aura)
+        type_params = []
+        if self.match('['):
             while True:
-                self.consume(expected_type='IDENT')
+                type_params.append(self.consume(expected_type='IDENT').value)
                 if not self.match(','): break
-            if self.check(']'): self.consume()
-            else: self.consume(expected_value='>')
+            self.consume(expected_value=']')
 
         base_class = None
-        # Support both ': Base' and '(Base)' syntax (or 'extends Base')
+        # Strict Inheritance: class Foo(Base) only
         if self.match('('):
             base_class = self.consume(expected_type='IDENT').value
             self.consume(expected_value=')')
-        elif self.match(':'):
-             base_class = self.consume(expected_type='IDENT').value
-        elif self.match('extends'):
-             base_class = self.consume(expected_type='IDENT').value
             
         self.consume(expected_value='{')
         members = []
@@ -492,10 +500,10 @@ class Parser:
                 else: break
 
             # Check for methods
-            decorators = []
+            member_decorators = []
             while self.match('@'):
                 dec_name = self.consume(expected_type='IDENT').value
-                decorators.append(dec_name)
+                member_decorators.append(dec_name)
                 if dec_name == 'staticmethod': is_static = True
                 
             if self.check('def') or self.check('fn'):
@@ -523,7 +531,7 @@ class Parser:
                     raise SyntaxError(f"Unexpected token in class: {self.peek()}")
         
         self.consume(expected_value='}')
-        return ClassDecl(name, members, base_class)
+        return ClassDecl(name, members, base_class, type_params, decorators, visibility, is_static, is_volatile)
     def parse_module_decl(self):
         self.consume(expected_value='module')
         name = self.consume(expected_type='IDENT').value
@@ -548,12 +556,12 @@ class Parser:
         self.consume(expected_value='type')
         name = self.consume(expected_type='IDENT').value
         
-        # Generics: type Result<T, E>
-        if self.match('<'):
+        # Generics: type Result[T, E] only
+        if self.match('['):
             while True:
                 self.consume(expected_type='IDENT')
                 if not self.match(','): break
-            self.consume(expected_value='>')
+            self.consume(expected_value=']')
             
         self.consume(expected_value='=')
         
@@ -661,7 +669,7 @@ class Parser:
         if self.check(';'): self.consume()
         return ImportStmt(module, items)
 
-    def parse_trait_decl(self):
+    def parse_trait_decl(self, visibility='public'):
         self.consume(expected_value='trait')
         name = self.consume(expected_type='IDENT').value
         self.consume(expected_value='{')
@@ -706,7 +714,7 @@ class Parser:
                  self.pos += 1 # Skip unknown
                  
         self.consume(expected_value='}')
-        return TraitDecl(name, members)
+        return TraitDecl(name, members, None, visibility)
         token = self.consume()
         t_name = str(token.value)
         
@@ -731,12 +739,6 @@ class Parser:
                      arg += ", " + self.parse_type()
                 self.consume(expected_value=']')
                 t_name += f"[{arg}]"
-            elif self.match('<'):
-                arg = self.parse_type()
-                while self.match(','):
-                     arg += ", " + self.parse_type()
-                self.consume(expected_value='>')
-                t_name += f"[{arg}]" # Map <T> to [T] for Python typing compatibility
             # Optional: String?
             elif self.match('?'):
                 t_name += "?"
@@ -761,11 +763,6 @@ class Parser:
                 else_body = self.parse_block()
         return IfStmt(cond, then_body, else_body)
 
-    def parse_unless_stmt(self):
-        self.consume(expected_value='unless')
-        cond = self.parse_expression()
-        body = self.parse_block()
-        return UnlessStmt(cond, body)
 
     def parse_while_stmt(self):
         self.consume(expected_value='while')
@@ -773,16 +770,7 @@ class Parser:
         body = self.parse_block()
         return WhileStmt(cond, body)
 
-    def parse_until_stmt(self):
-        self.consume(expected_value='until')
-        cond = self.parse_expression()
-        body = self.parse_block()
-        return UntilStmt(cond, body)
 
-    def parse_loop_stmt(self):
-        self.consume(expected_value='loop')
-        body = self.parse_block()
-        return LoopStmt(body)
 
     def parse_for_stmt(self):
         self.consume(expected_value='for')
@@ -823,13 +811,6 @@ class Parser:
         if self.check(';'): self.consume()
         return ReturnStmt(val)
 
-    def parse_guard_stmt(self):
-        self.consume(expected_value='guard')
-        cond = self.parse_expression()
-        self.consume(expected_value='else')
-        body = self.parse_block()
-        if self.check(';'): self.consume()
-        return GuardStmt(cond, body)
 
     def parse_try_stmt(self):
         self.consume(expected_value='try')

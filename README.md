@@ -4,7 +4,7 @@
 
 [![GitHub](https://img.shields.io/badge/GitHub-JoaoGVTheodoro%2Faura--lang-blue?logo=github)](https://github.com/JoaoGVTheodoro/aura-lang)
 ![Status](https://img.shields.io/badge/Status-Phase%204%20Complete-success)
-![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
 ![Tests](https://img.shields.io/badge/Tests-100%25%20Pass-success)
 
 ---
@@ -21,7 +21,7 @@
 ### 🎯 Language Features
 ```aura
 # Functions with type inference
-fn fibonacci(n) -> int {
+def fibonacci(n) -> int {
   let mut a, b = 0, 1
   for i in range(n) {
     a, b = b, a + b
@@ -33,11 +33,11 @@ fn fibonacci(n) -> int {
 class Counter {
   let count = 0
   
-  fn increment() {
+  def increment() {
     self.count += 1
   }
   
-  fn get_count() -> int {
+  def get_count() -> int {
     ret self.count
   }
 }
@@ -60,8 +60,8 @@ if let x = opt_value {
 
 # Piping operations
 let result = values
-  |> filter(fn(x) { x > 5 })
-  |> map(fn(x) { x * 2 })
+  |> filter(def(x) { x > 5 })
+  |> map(def(x) { x * 2 })
 ```
 
 ---
@@ -205,18 +205,18 @@ print(factorial(5))
 
 ## 📖 Documentation
 
-All documentation is in the [`docs/`](docs/) folder:
+All documentation is in the [`docs/`](docs/) folder.
 
-- **[LANGUAGE_GUIDE.md](docs/LANGUAGE_GUIDE.md)** - Complete language reference (600+ lines)
-- **[DESIGN.md](docs/DESIGN.md)** - Architecture and design decisions
-- **[TYPES.md](docs/TYPES.md)** - Type system and inference rules
-- **[CONTRIBUTING.md](docs/CONTRIBUTING.md)** - How to contribute
-- **[NEXT_STEPS.md](docs/NEXT_STEPS.md)** - Phase 5 roadmap
+*   **Standards**:
+    *   [AEP-001: The Zen of Aura](docs/AEP-001_Zen_of_Aura.md) (Strict Syntax Rules)
 
-### Detailed Guides
-- **[RUN_COMMAND.md](docs/RUN_COMMAND.md)** - How to use `aura run`
-- **[FEATURE_VERIFICATION.md](docs/FEATURE_VERIFICATION.md)** - Feature checklist
-- **[BUG_FIX_REPORT.md](docs/BUG_FIX_REPORT.md)** - Technical bug fixes
+*   **Guides**:
+    *   [Language Guide](docs/LANGUAGE_GUIDE.md) (Full Reference)
+    *   [Standard Library](docs/STDLIB.md) (Coming Soon)
+
+*   **Internals**:
+    *   [Design Architecture](docs/DESIGN.md)
+    *   [Type System](docs/TYPES.md)
 
 ---
 
@@ -330,32 +330,6 @@ python3 -m pytest tests/test_transpiler.py -v
 
 ## 🛣️ Roadmap (Phase 5)
 
-### 🎨 IDE Integration
-- [ ] VS Code extension with syntax highlighting
-- [ ] Language Server Protocol (LSP) support
-- [ ] Real-time type checking
-- [ ] Code completion and IntelliSense
-
-### 📦 Package Manager
-- [ ] Design apm (Aura Package Manager)
-- [ ] Central package registry
-- [ ] Dependency management
-
-### 🚀 Performance
-- [ ] JIT compilation
-- [ ] Optimize generated Python
-- [ ] Benchmark suite
-
-### 📚 Documentation
-- [ ] Tutorial series
-- [ ] More real-world examples
-- [ ] API reference
-
-### 👥 Community
-- [ ] GitHub discussions
-- [ ] Contributing guidelines
-- [ ] Community showcase
-
 See [NEXT_STEPS.md](docs/NEXT_STEPS.md) for detailed roadmap.
 
 ---
@@ -363,26 +337,6 @@ See [NEXT_STEPS.md](docs/NEXT_STEPS.md) for detailed roadmap.
 ## 🤝 Contributing
 
 Contributions are welcome! Please read [CONTRIBUTING.md](docs/CONTRIBUTING.md) first.
-
-### Quick Start for Contributors
-```bash
-# Fork and clone
-git clone https://github.com/YOUR_USERNAME/aura-lang.git
-cd aura-lang
-
-# Create a feature branch
-git checkout -b feature/your-feature
-
-# Make changes and test
-python3 -m pytest tests/ -v
-
-# Commit and push
-git add .
-git commit -m "Add feature: your-feature"
-git push origin feature/your-feature
-
-# Create pull request
-```
 
 ---
 

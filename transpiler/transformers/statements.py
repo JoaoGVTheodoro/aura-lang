@@ -7,6 +7,7 @@ class StatementTransformer:
         self.expr_transformer = ExpressionTransformer()
         self.indent_level = 0
         self.class_members = {} # class_name -> {member_name: visibility}
+        self.in_class_scope = False
     
     def transform(self, node):
         if node is None:
@@ -38,8 +39,9 @@ class StatementTransformer:
     # ========== Declarations ==========
     def transform_VarDecl(self, node):
         name = node.name
-        if node.visibility == 'private': name = f"__{name}"
-        elif node.visibility == 'protected': name = f"_{name}"
+        if self.in_class_scope:
+            if node.visibility == 'private': name = f"__{name}"
+            elif node.visibility == 'protected': name = f"_{name}"
         
         if node.value:
             value = self.expr_transformer.transform(node.value)
@@ -53,8 +55,20 @@ class StatementTransformer:
     
     def transform_FunctionDecl(self, node):
         decorators_code = ""
+        # Handle static/volatile
+        if node.is_static:
+            decorators_code += "@staticmethod\n"
+        if node.is_volatile:
+             decorators_code += "# volatile\n"
+             
         for dec in node.decorators:
             decorators_code += f"@{dec.name}\n"
+        
+        name = node.name
+        name = node.name
+        if self.in_class_scope:
+            if node.visibility == 'private': name = f"__{name}"
+            elif node.visibility == 'protected': name = f"_{name}"
         
         params = []
         for param in node.params:
@@ -89,11 +103,20 @@ class StatementTransformer:
         for dec in node.decorators:
             decorators_code += f"@{dec.name}\n"
         
+        name = node.name
+        if node.visibility == 'private': name = f"__{name}"
+        elif node.visibility == 'protected': name = f"_{name}"
+        
         base = ""
         if node.base_class:
             base = f"({node.base_class})"
         
+        if node.base_class:
+            base = f"({node.base_class})"
+        
         self.indent_level += 1
+        old_in_class = self.in_class_scope
+        self.in_class_scope = True
         
         # Populate visibility map for expressions
         current_vis = {}
@@ -154,6 +177,7 @@ class StatementTransformer:
         # Reset and finish
         final_body = init_code + body_code
         self.indent_level -= 1
+        self.in_class_scope = old_in_class
         self.expr_transformer.member_visibilities = old_vis
         
         if not final_body.strip():

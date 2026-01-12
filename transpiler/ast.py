@@ -65,7 +65,7 @@ class ConstDecl(Stmt):
 
 class FunctionDecl(Stmt):
     def __init__(self, name, params, return_type=None, body=None, 
-                 is_async=False, type_params=None, decorators=None, visibility='public'):
+                 is_async=False, type_params=None, decorators=None, visibility='public', is_static=False, is_volatile=False):
         self.name = name
         self.params = params or []
         self.return_type = return_type
@@ -74,20 +74,26 @@ class FunctionDecl(Stmt):
         self.type_params = type_params or []
         self.decorators = decorators or []
         self.visibility = visibility
+        self.is_static = is_static
+        self.is_volatile = is_volatile
 
 class ClassDecl(Stmt):
-    def __init__(self, name, body, base_class=None, type_params=None, decorators=None):
+    def __init__(self, name, body, base_class=None, type_params=None, decorators=None, visibility='public', is_static=False, is_volatile=False):
         self.name = name
         self.body = body
         self.base_class = base_class
         self.type_params = type_params or []
         self.decorators = decorators or []
+        self.visibility = visibility
+        self.is_static = is_static
+        self.is_volatile = is_volatile
 
 class TraitDecl(Stmt):
-    def __init__(self, name, members, type_params=None):
+    def __init__(self, name, members, type_params=None, visibility='public'):
         self.name = name
         self.members = members
         self.type_params = type_params or []
+        self.visibility = visibility
 
 class TypeDecl(Stmt):
     def __init__(self, name, type_expr, type_params=None):

@@ -48,15 +48,20 @@ class AuraGenerator:
         return self.output.getvalue(), "".join(self.expected_output)
 
     def gen_syntax_test(self):
-        self.writeln("// Stochastic Syntax Test")
+        self.writeln("// Stochastic Syntax Test (Zen Mode)")
         var_name = self.gen_name()
         val = self.rng.randint(-50, 50)
-        self.writeln(f"let mut {var_name} = {val};")
+        # Random visibility/static for global var
+        vis = self.rng.choice(['public', 'private', 'protected', 'static', ''])
+        decl = f"let mut {var_name} = {val};"
+        if vis: decl = f"{vis} {decl}"
+        self.writeln(decl)
         
         # Nested structures (limit depth to avoid complexity explosion)
         depth = self.rng.randint(2, 4)
         for d in range(depth):
-            branch = self.rng.choices(['if', 'unless', 'until', 'block', 'match'], weights=[30, 20, 15, 20, 15])[0]
+            # branching: if, while, match, block
+            branch = self.rng.choices(['if', 'while', 'match', 'block'], weights=[40, 20, 20, 20])[0]
             if branch == 'if':
                 cond_str = self.rng.choice(['>= 0', '< 100', '!= 42'])
                 passed = False
@@ -74,23 +79,26 @@ class AuraGenerator:
                     else: val -= operand
                 self.indent_level -= 1
                 self.writeln("}")
-            elif branch == 'unless':
-                self.writeln(f"unless {var_name} == 999 {{")
-                self.indent_level += 1
-                if val != 999:
-                    val += 1
-                self.writeln(f"{var_name} = {var_name} + 1;")
-                self.indent_level -= 1
-                self.writeln("}")
-            elif branch == 'until':
-                # Small, safe loop
+            elif branch == 'while':
+                # Small, safe loop (was until)
+                # while var < limit { ... }
+                # logic: if var < limit, increment until limit.
                 limit = val + self.rng.randint(1, 4)
-                self.writeln(f"until {var_name} == {limit} {{")
+                
+                # We need a condition that is initially true (sometimes) and eventually false
+                # Let's say: while var_name < limit
+                
+                self.writeln(f"while {var_name} < {limit} {{")
                 self.indent_level += 1
                 self.writeln(f"{var_name} = {var_name} + 1;")
-                val = limit
+                
+                # Logic update:
+                if val < limit:
+                    val = limit
+                    
                 self.indent_level -= 1
                 self.writeln("}")
+
             elif branch == 'match':
                 self.writeln(f"match {var_name} {{")
                 self.indent_level += 1
@@ -138,16 +146,19 @@ class AuraGenerator:
         base = self.gen_name("B")
         self.writeln(f"class {base} {{")
         self.writeln("    protected let p = 10")
+        self.writeln("    public server def get_p() = self.p") # 'server' ignored but valid? No, only standard mods.
+        # Use standard mods
         self.writeln("    public def get_p() = self.p")
+        self.writeln("    static def factory() { return 100; }")
         self.writeln("}")
         
         mid = self.gen_name("M")
-        self.writeln(f"class {mid} extends {base} {{")
+        self.writeln(f"class {mid}({base}) {{")
         self.writeln("    public def get_p2() = self.p * 2")
         self.writeln("}")
         
         leaf = self.gen_name("L")
-        self.writeln(f"class {leaf} extends {mid} {{")
+        self.writeln(f"class {leaf}({mid}) {{")
         self.writeln("    private let secret = 100")
         self.writeln("    public def total() = self.get_p2() + self.secret")
         self.writeln("}")
@@ -155,7 +166,9 @@ class AuraGenerator:
         obj = self.gen_name("o")
         self.writeln(f"let {obj} = {leaf}();")
         self.writeln(f"print({obj}.total());")
+        self.writeln(f"print({base}.factory());") 
         self.expected_output.append("120\n")
+        self.expected_output.append("100\n")
 
     def gen_integration_test(self):
         self.writeln("// Stochastic Integration Test")

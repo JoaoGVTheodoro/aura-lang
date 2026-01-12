@@ -28,7 +28,7 @@ python3 main.py transpile examples/test.aura
 
 ```aura
 // hello.aura
-fn main() {
+def main() {
     print("Hello, Aura!")
 }
 
@@ -91,21 +91,21 @@ let (x, y) = (10, 20)
 ### Basic Functions
 
 ```aura
-fn greet(name) {
+def greet(name) {
     "Hello, " + name
 }
 
-fn add(a: Int, b: Int) -> Int {
+def add(a: Int, b: Int) -> Int {
     a + b
 }
 
 // Implicit return (last expression)
-fn square(x: Int) -> Int {
+def square(x: Int) -> Int {
     x * x
 }
 
 // Multiple statements
-fn process(n: Int) -> Int {
+def process(n: Int) -> Int {
     let doubled = n * 2
     doubled + 1
 }
@@ -114,7 +114,7 @@ fn process(n: Int) -> Int {
 ### Default Parameters
 
 ```aura
-fn greet(name, greeting = "Hello") -> String {
+def greet(name, greeting = "Hello") -> String {
     greeting + ", " + name
 }
 
@@ -125,7 +125,7 @@ greet("Bob", "Hi")       // "Hi, Bob"
 ### Variadic Functions
 
 ```aura
-fn sum(...numbers: [Int]) -> Int {
+def sum(...numbers: [Int]) -> Int {
     numbers |> reduce(0, (a, b) => a + b)
 }
 
@@ -137,7 +137,7 @@ sum(1, 2, 3)    // 6
 ### Named Parameters
 
 ```aura
-fn make_request(url: String, method: String = "GET", timeout: Int = 30) {
+def make_request(url: String, method: String = "GET", timeout: Int = 30) {
     // ...
 }
 
@@ -149,7 +149,7 @@ make_request(url="https://api.example.com", timeout=60)
 ### Async Functions
 
 ```aura
-async fn fetch_user(id: Int) -> User {
+async def fetch_user(id: Int) -> User {
     let response = @http.get("https://api.example.com/users/" + id)
     response.json()
 }
@@ -162,26 +162,26 @@ let user = await fetch_user(42)
 
 ```aura
 // Single parameter
-let double = fn(x) { x * 2 }
+let double = def(x) { x * 2 }
 double(5)  // 10
 
 // Multiple parameters
-let add = fn(a, b) { a + b }
+let add = def(a, b) { a + b }
 add(3, 4)  // 7
 
 // Shorthand (for simple expressions)
-let is_positive = fn(x) { x > 0 }
+let is_positive = def(x) { x > 0 }
 ```
 
 ### Function Composition
 
 ```aura
-fn compose[A, B, C](f: (A) -> B, g: (B) -> C) -> (A) -> C {
-    fn(x) { g(f(x)) }
+def compose[A, B, C](f: (A) -> B, g: (B) -> C) -> (A) -> C {
+    def(x) { g(f(x)) }
 }
 
-let add_one = fn(x) { x + 1 }
-let double = fn(x) { x * 2 }
+let add_one = def(x) { x + 1 }
+let double = def(x) { x * 2 }
 
 let add_then_double = compose(add_one, double)
 add_then_double(5)  // (5 + 1) * 2 = 12
@@ -195,13 +195,13 @@ add_then_double(5)  // (5 + 1) * 2 = 12
 class Point {
     x: Int
     y: Int
-    
-    fn new(x: Int, y: Int) {
+
+    def new(x: Int, y: Int) {
         self.x = x
         self.y = y
     }
-    
-    fn distance() -> Float {
+
+    def distance() -> Float {
         let dx = self.x
         let dy = self.y
         sqrt(dx * dx + dy * dy)
@@ -216,17 +216,17 @@ print(p.distance())  // 5.0
 
 ```aura
 class Shape {
-    fn area() -> Float { 0.0 }
+    def area() -> Float { 0.0 }
 }
 
-class Circle: Shape {
+class Circle(Shape) {
     radius: Float
-    
-    fn new(radius: Float) {
+
+    def new(radius: Float) {
         self.radius = radius
     }
-    
-    fn area() -> Float {
+
+    def area() -> Float {
         3.14159 * self.radius * self.radius
     }
 }
@@ -241,19 +241,19 @@ print(circle.area())  // 78.54
 class Rectangle {
     width: Float
     height: Float
-    
-    fn new(w: Float, h: Float) {
+
+    def new(w: Float, h: Float) {
         self.width = w
         self.height = h
     }
-    
+
     @property
-    fn area() -> Float {
+    def area() -> Float {
         self.width * self.height
     }
-    
+
     @property
-    fn perimeter() -> Float {
+    def perimeter() -> Float {
         2 * (self.width + self.height)
     }
 }
@@ -268,12 +268,12 @@ print(rect.perimeter)   // 30.0
 ```aura
 class Math {
     @staticmethod
-    fn pi() -> Float {
+    def pi() -> Float {
         3.14159
     }
-    
+
     @staticmethod
-    fn max(a: Int, b: Int) -> Int {
+    def max(a: Int, b: Int) -> Int {
         if a > b { a } else { b }
     }
 }
@@ -310,12 +310,12 @@ unless x > 0 {
 ### Guard
 
 ```aura
-fn process(value: Int) {
+def process(value: Int) {
     guard value > 0 else {
         print("Invalid: must be positive")
         return
     }
-    
+
     print("Processing: " + value)
 }
 ```
@@ -512,14 +512,14 @@ let pairs = [(x, y) for x in [1, 2] for y in ["a", "b"]]
 ### Higher-Order Functions
 
 ```aura
-fn apply_twice[T](f: (T) -> T, value: T) -> T {
+def apply_twice[T](f: (T) -> T, value: T) -> T {
     f(f(value))
 }
 
-let add_one = fn(x) { x + 1 }
+let add_one = def(x) { x + 1 }
 apply_twice(add_one, 5)  // 7
 
-fn repeat[T](f: (T) -> T, n: Int, value: T) -> T {
+def repeat[T](f: (T) -> T, n: Int, value: T) -> T {
     let result = value
     for _ in 0..n {
         result = f(result)
@@ -549,14 +549,14 @@ try {
 class ValidationError {
     message: String
     field: String
-    
-    fn new(message: String, field: String) {
+
+    def new(message: String, field: String) {
         self.message = message
         self.field = field
     }
 }
 
-fn validate_email(email: String) {
+def validate_email(email: String) {
     if email.contains("@") {
         return email
     } else {
@@ -592,7 +592,7 @@ let zip = user?.address?.zip ?: "00000"
 
 ```aura
 // Simulating Option/Maybe type
-fn safe_divide(a: Int, b: Int) -> Int | None {
+def safe_divide(a: Int, b: Int) -> Int | None {
     if b == 0 {
         null
     } else {
@@ -611,15 +611,15 @@ match result {
 ### Early Return
 
 ```aura
-fn process_user(user) {
+def process_user(user) {
     if !user {
         return
     }
-    
+
     if !user.is_active {
         return
     }
-    
+
     // Process user...
 }
 ```
@@ -627,13 +627,13 @@ fn process_user(user) {
 ### Lazy Evaluation
 
 ```aura
-fn log_expensive[T](level: String, fn: () -> T) {
+def log_expensive[T](level: String, fn: () -> T) {
     if should_log(level) {
         print(level + ": " + fn())  // fn() called only if needed
     }
 }
 
-log_expensive("debug", fn() { expensive_computation() })
+log_expensive("debug", def() { expensive_computation() })
 ```
 
 ## Performance Tips

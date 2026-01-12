@@ -1,14 +1,9 @@
-// Fibonacci Sequence - Iterative
-let n = 10;
-let a = 0;
-let b = 1;
-
-print("Fibonacci sequence:");
-
-for i in 1..n {
-    print(a);
-    let temp = a + b;
-    a = b;
-    b = temp;
+def fibonacci(n) -> int {
+  let mut a, b = 0, 1
+  for i in range(n) {
+    a, b = b, a + b
+  }
+  ret a
 }
 
+print(fibonacci(10))

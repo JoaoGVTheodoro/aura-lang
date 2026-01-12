@@ -12,7 +12,7 @@ from parser.to_ast import Tokenizer, Parser
 from transpiler.transformer import Transformer
 from tools.stochastic_aura_gen import AuraGenerator
 
-@pytest.mark.parametrize("seed", range(400000))
+@pytest.mark.parametrize("seed", range(500000))
 def test_stochastic_aura(seed):
     # 1. Generate unique Aura code and expected output
     gen = AuraGenerator(seed)
